@@ -1,0 +1,355 @@
+{%- if section.settings.show -%}
+	<style>
+		#shopify-section-{{ section.id }}{
+			display: none;
+		}
+		#shopify-section-{{ section.id }} section{
+			z-index: 99990;
+			width: 100%;
+			height: 100%;
+			left: 0;
+			top: 0;
+			position: fixed;
+			overflow: hidden;
+			background: rgba(0,0,0,0.8);
+		}
+		#shopify-section-{{ section.id }} .lucky-wrap{
+			position: fixed;
+			top: 20px;
+			left: 50%;
+			transform: translateX(-50%);
+			margin: auto;
+			z-index: 100001;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			width: 100%;
+			max-width: 335px;
+			max-height: 610px;
+		}
+		#shopify-section-{{ section.id }} .lucky-dog,
+		#shopify-section-{{ section.id }} .lucky-content{
+			width: 100%;
+			position: relative;
+		}
+		#shopify-section-{{ section.id }} .lucky-bg{
+			width: 100%;
+		}
+		#shopify-section-{{ section.id }} .lucky-dog-bg img,
+		#shopify-section-{{ section.id }} .lucky-bg img{
+			width: 100%;
+		}
+		#shopify-section-{{ section.id }} .lucky-dog{
+			display: none;
+			position: absolute;
+		}
+		#shopify-section-{{ section.id }} .lucky-dog-bg a{
+			display: block;
+		}
+		#shopify-section-{{ section.id }} .lucky-plate-box{
+			position: absolute;
+			top: 121px;
+			width: 74%;
+			left: 15%;
+		}
+
+		#shopify-section-{{ section.id }} .lucky-plate{
+			width: 100%;
+			transform: rotate(0deg);
+		}
+		#shopify-section-{{ section.id }} .lucky-plate img{
+			width: 100%;
+		}
+
+		#shopify-section-{{ section.id }} .lucky-point{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 50px;
+			height: 30px;
+			min-width: 20px;
+			min-height: 20px;
+			cursor: pointer;
+			transform: translate(-50%,-50%);
+		}
+		#shopify-section-{{ section.id }} .lucky-point img{
+			width: 100%;
+		}
+		#shopify-section-{{ section.id }} .lucky-close{
+			position: absolute;
+			right: 0;
+			top: 100px;
+			z-index: 10000;
+		}
+		#shopify-section-{{ section.id }} .lucky-ctrl{
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			margin: 0 auto;
+			text-align: center;
+		}
+		#shopify-section-{{ section.id }} .lucky-desc{
+			padding: 5px 15px;
+			background: #142e37;
+			color: #FFFFFF;
+			border-radius: 10px;
+			cursor: pointer;
+		}
+		#shopify-section-{{ section.id }} .lucky-gohome{
+			padding-top: 10px;
+			font-size: 12px;
+			text-decoration: underline;
+			color: #142e37;
+		}
+
+		#shopify-section-{{ section.id }} .animation{
+			width: 100%;
+			animation: haha 1s ease-in-out infinite alternate;
+			-webkit-animation: haha 1.2s  ease-in-out infinite alternate;
+		}
+		#shopify-section-{{ section.id }} .transition{
+			transition: transform 10s ease;
+		}
+
+		@-webkit-keyframes  haha{
+			from{transform: rotate(-15deg)}
+			to{transform: rotate(15deg)}
+		}
+		@keyframes  haha{
+			from{transform: rotate(-15deg)}
+			to{transform: rotate(15deg)}
+		}
+	</style>
+	<section data-section-id="{{ section.id }}">
+		<div class="lucky-wrap">
+			<div class="lucky-content">
+				<div class="lucky-bg">
+					{% capture image_bg_size -%}{% render 'image-size',sizes:'300,400,500,600,700,800,900',image:section.settings.lucky_bg %}{%- endcapture %}
+					{%- assign image_bg_url =section.settings.lucky_bg | img_url:'1x1' | replace:'_1x1.','_{width}x.' -%}
+					<img data-src="{{ image_bg_url }}" data-width="[{{ image_bg_size }}]" data-sizes="auto" class="lazyload" alt="{{ section.settings.lucky_bg.alt | escape }}"/>
+				</div>
+				<div class="lucky-plate-box">
+					<div class="lucky-plate-y1y animation">
+						<div class="lucky-plate">
+							{% capture image_plate_size -%}{% render 'image-size',sizes:'300,400,500,600,700,800,900',image:section.settings.lucky_plate %}{%- endcapture %}
+							{%- assign image_plate_url =section.settings.lucky_plate | img_url:'1x1' | replace:'_1x1.','_{width}x.' -%}
+							<img data-src="{{ image_plate_url }}" data-width="[{{ image_plate_size }}]" data-sizes="auto" class="lazyload lazypreload" alt="{{ section.settings.lucky_plate.alt | escape }}"/>
+						</div>
+					</div>
+					<div class="lucky-point">
+						{% capture image_point_size -%}{% render 'image-size',sizes:'300,400,500,600,700,800,900',image:section.settings.lucky_point %}{%- endcapture %}
+						{%- assign image_point_url =section.settings.lucky_point | img_url:'1x1' | replace:'_1x1.','_{width}x.' -%}
+						<img data-src="{{ image_point_url }}" data-width="[{{ image_point_size }}]" data-sizes="auto" class="lazyload" alt="{{ section.settings.lucky_point.alt | escape }}"/>
+					</div>
+				</div>
+				<div class="lucky-ctrl">
+					<div><span class=" lucky-desc lucky-start">LUCK DRAM></span></div>
+					<p class="lucky-gohome"><a href="{{ routes.root_url }}">GO SHOPPING</a></p>
+				</div>
+			</div>
+			<div class="lucky-dog">
+				<div class="lucky-dog-bg">
+					{% capture image_bg2_size -%}{% render 'image-size',sizes:'300,400,500,600,700,800,900',image:section.settings.lucky_bg2 %}{%- endcapture %}
+					{%- assign image_bg2_url =section.settings.lucky_bg2 | img_url:'1x1' | replace:'_1x1.','_{width}x.' -%}
+					<img data-src="{{ image_bg2_url }}" data-width="[{{ image_bg2_size }}]" data-sizes="auto" class="lazyload" alt="{{ section.settings.lucky_bg2.alt | escape }}"/>
+				</div>
+			</div>
+			<button class="lucky-close">
+				<svg width="25px" height="25px" viewBox="0 0 60 60">
+					<g stroke="none" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd">
+						<circle fill-opacity="0.5" cx="30" cy="30" r="30"></circle>
+						<rect transform="translate(30,30) rotate(-45) translate(-30, -30) " x="28" y="13" width="3" height="33" rx="1.5"></rect>
+						<rect transform="translate(30,30) rotate(-315) translate(-30, -30) " x="28" y="13" width="3" height="33" rx="1.5"></rect>
+					</g>
+				</svg>
+			</button>
+		</div>
+	</section>
+	<script>
+    ~function () {
+      class Surprise{
+        constructor(obj) {
+          this.lucky = obj.lucky;
+          this.el=obj.el;
+          this.overdueTime=obj.overdueTime||30;
+          this.tomorrow=obj.time||1;
+          this.startButton=obj.el.querySelector(".lucky-start");
+          this.closeButton=obj.el.querySelector(".lucky-close");
+          this.luckyPlateY1Y=obj.el.querySelector(".lucky-plate-y1y");
+          this.plate=obj.el.querySelector(".lucky-plate");
+          this.status=false;
+          this.init();
+        }
+        init(){
+          this.isAnimation(true);
+          this.bind();
+        }
+        bind(){
+          this.startButton.onclick= ev=>{
+            ev.preventDefault();
+            this.start();
+          }
+          this.closeButton.onclick=()=>this.close();
+          document.querySelector(".lucky-dog").onclick=()=>this.close();
+        }
+        permission(e){
+          let surpriseTime=localStorage.getItem("surpriseTime");
+          let closeTime=localStorage.getItem("closeTime");
+          let now=new Date().getTime();
+          let license=true;
+          let tomorrow=true;
+          if(surpriseTime){
+            console.log(1)
+            let overdue=parseInt(surpriseTime)+this.overdueTime*24*3600*1000;
+            license = now > overdue;
+          }
+          if(closeTime){
+            console.log(2)
+            let nexTime=parseInt(closeTime)+this.tomorrow*24*3600*1000;
+            tomorrow=now > nexTime;
+          }
+          return !!(license && tomorrow);
+        }
+        isOverdue(time){
+          let overdue=parseInt(time)+30*24*3600*1000;
+          let now=new Date().getTime();
+          return now>overdue;
+        }
+        turn(){
+          this.luckyPlateY1Y.classList.remove('animation');
+          localStorage.setItem("surpriseTime",new Date().getTime().toString());
+          let random = (Math.random() * 100);
+          if(random<= this.lucky){
+            this.luckyDog();
+          }else{
+            this.unlucky();
+          }
+        }
+        start(){
+          if(this.permission()){
+            this.transitionend();
+            this.turn();
+          }else{
+            console.log("Ha ha！You don't have permission.")
+          }
+        }
+        luckyDog(){
+          this.status=true;
+          this.rotate(360*10-120);
+        }
+        unlucky(){
+          this.status=false;
+          this.rotate(360*10-180);
+        }
+        rotate(deg){
+          this.plate.style.transform="rotate("+deg+"deg)";
+        }
+        close(){
+          localStorage.setItem("closeTime",new Date().getTime().toString());
+          this.el.style.display='none';
+          this.el.parentNode.removeChild(this.el);
+        }
+        isAnimation(status){
+          if(status){
+            this.plate.classList.add('transition');
+          }else{
+            this.plate.classList.remove('transition');
+          }
+        }
+        transitionEvent(){
+          let transition={
+            transition:'transitionend',
+            OTransition:'oTransitionEnd',
+            MozTransition:'transitionend',
+            WebkitTransition:'webkitTransitionEnd'
+          }
+          let el = document.createElement('surface');
+          for (const transitionKey in transition) {
+            if(el.style[transitionKey] !==undefined){
+              return transition[transitionKey];
+            }
+          }
+        }
+        transitionend(){
+          let transitionE=this.transitionEvent();
+          if(transitionE){
+            this.plate.addEventListener(transitionE,()=>{
+              this.callback(this.status);
+            })
+          }else{
+            setTimeout(()=>{
+              this.callback(this.status);
+            },1000)
+          }
+        }
+        callback(status){
+          if(status){
+            sessionStorage.setItem("luckyDog",'1');
+            setTimeout(()=>{
+              document.querySelector(".lucky-dog").style.display='block';
+              document.querySelector(".lucky-dog").style.zIndex='999';
+            },100)
+          }else{
+            sessionStorage.setItem("luckyDog",'0');
+            document.querySelector(".lucky-desc").classList.remove("lucky-start");
+            document.querySelector(".lucky-desc").innerHTML="Thank you！";
+          }
+        }
+      }
+      let el=document.querySelector("#shopify-section-{{ section.id }}");
+      let surp=new Surprise({
+        lucky: {{ section.settings.lucky }},
+        el:el,
+        overdueTime:30,
+				time:1
+      });
+      if( surp.permission()){
+        el.style.display='block'
+      }
+    }()
+	</script>
+{%- endif -%}
+
+{% schema %}
+{
+	"name": "大转盘",
+	"limit":1,
+	"settings": [
+		{
+			"type": "checkbox",
+			"id": "show",
+			"label": "开启",
+			"default": false
+		},
+		{
+			"type": "number",
+			"id": "lucky",
+			"label": "幸运值0-100",
+			"default": 80
+		},
+		{
+			"type": "image_picker",
+			"id": "lucky_bg",
+			"label": "转盘背景"
+		},
+		{
+			"type": "image_picker",
+			"id": "lucky_bg2",
+			"label": "转盘中间背景"
+		},
+		{
+			"type": "image_picker",
+			"id": "lucky_point",
+			"label": "转盘指针"
+		},
+		{
+			"type": "image_picker",
+			"id": "lucky_plate",
+			"label": "转盘"
+		}
+	]
+}
+{% endschema %}

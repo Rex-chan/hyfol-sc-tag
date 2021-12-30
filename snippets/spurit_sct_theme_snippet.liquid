@@ -1,0 +1,24 @@
+<script>
+  if(typeof(Spurit) === 'undefined'){
+    var Spurit = {};
+  }
+  if(!Spurit.CountdownTimer){
+    Spurit.CountdownTimer = {};
+  }
+  if(!Spurit.CountdownTimer.snippet){
+    Spurit.CountdownTimer.snippet = {};
+  }
+  Spurit.CountdownTimer.snippet.shopHash = '5c31db2a6ae7c5fe68a5e5a804e30701';
+  Spurit.CountdownTimer.snippet.cacheTimestamp = 1640262228;
+
+  {% assign page = template | split: '.' | first %}
+  {% if page == 'product' and product and product.id %}
+    Spurit.CountdownTimer.snippet.productId = {{ product.id }};
+  {% endif %}
+  {% if page == 'collection' and collection and collection.id %}
+  Spurit.CountdownTimer.snippet.collectionId = {{ collection.id }};
+  {% endif %}
+</script>
+
+    <script src="https://amaicdn.com/timer-app/common.js"></script>
+    <link href="https://amaicdn.com/timer-app/common.css" rel="stylesheet" type="text/css" media="all">

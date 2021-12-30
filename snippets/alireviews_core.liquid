@@ -1,0 +1,88 @@
+{% assign template_support = "product" %}
+{% if template_support contains request.page_type %}
+ 
+ 
+        <script>
+            var alireviews_page_type = "{{ template }}";
+            var alireviews_collection_id = "{{ collection.id }}";
+            var alireviews_theme_id = "{{ theme.id }}";
+            {% assign alireviews_avg_order_value = 0 %}
+            {% if customer.orders_count != 0 %}
+                {% assign alireviews_avg_order_value = customer.total_spent  | divided_by: customer.orders_count | divided_by:100 %}
+            {% endif %}
+            var alireviews_avg_order_value = "{{ alireviews_avg_order_value }}";
+            var alireviews_customer_id = "{{ customer.id }}";
+            {% assign  alireviews_product_in_cart = "" | split: "" %}
+            {% for item in cart.items %}
+                {% assign alireviews_tmp_product_id = item.product_id | split: "_" %}
+                {% assign alireviews_product_in_cart = alireviews_product_in_cart | concat: alireviews_tmp_product_id %}
+            {% endfor %}
+            {% assign alireviews_product_in_cart = alireviews_product_in_cart | join: "," %}
+            var alireviews_product_in_cart = "{{ alireviews_product_in_cart }}";
+            var alireviews_product_id = "{{ product.id }}";
+            var alireviews_total_order_values = "{{customer.total_spent | divided_by:100 }}";
+            {% assign alireviews_tags = customer.tags | join: "," %}
+            var alireviews_tags = "{{ alireviews_tags }}";
+            var alireviews_last_purchase = "{{ customer.last_order.created_at | date: "%Y-%m-%d %H:%M" }}";
+        </script>
+ <script src="https://ar.cdnhub.co/box/js/frontend/45/iframe.js?version=5.4.9" defer="defer"></script>
+<script type="text/javascript">
+function loadCSS() {
+  let head = document.getElementsByTagName("head")[0];
+  let link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.type = "text/css";
+  link.href = "https://ar.cdnhub.co/box/css/frontend/45/vendor.css?version=5.4.9";
+  link.media = "all";
+  head.appendChild(link);
+};
+window.addEventListener("load", loadCSS(), false);
+</script>
+
+<script type="text/javascript"> 
+  var isLoadedWidgetAR = false;
+  var timerScrollIframeWidgetAR = null;
+  const EL_IFRAME_AR = 'iframe[widget-id][class=aliReviewsFrame]:not([src])';
+  function handleIframeWidget(){
+    let iframes = document.querySelectorAll(EL_IFRAME_AR);
+    if(iframes.length){
+      loadIframeWidget();
+      !isLoadedWidgetAR && document.addEventListener("scroll", loadIframeWidget, false);
+    }
+  }
+  function loadIframeWidget(){
+    if(timerScrollIframeWidgetAR){
+      clearTimeout(timerScrollIframeWidgetAR);
+    }
+    timerScrollIframeWidgetAR = setTimeout(function() {
+      let iframes = document.querySelectorAll(EL_IFRAME_AR);
+      let offsetTopNearest = iframes.length && iframes[0].offsetTop || 0;
+      let scrollTop = document.documentElement.scrollTop;
+      let heightScreen = document.documentElement.clientHeight;
+      let contentHeight = offsetTopNearest - heightScreen;
+      if (contentHeight <= scrollTop && !isLoadedWidgetAR){
+        isLoadedWidgetAR = true;
+        document.removeEventListener("scroll", loadIframeWidget, false);
+        renderIframe(iframes);
+      }
+    }, 100);
+  }
+
+  function renderIframe(iframes){
+    iframes.length && iframes.forEach((iframe, index) => {
+      let iframeSrc = iframe.getAttribute('data-ar-src');
+      iframe.setAttribute('src', iframeSrc || '');
+    });
+  }
+  document.addEventListener("DOMContentLoaded", function () { 
+    if(window.matchMedia('screen and (max-width: 768px)').matches){
+      handleIframeWidget();
+    }else{
+      let iframes = document.querySelectorAll(EL_IFRAME_AR);
+      renderIframe(iframes);
+    }
+  });
+</script>
+
+
+{% endif %}

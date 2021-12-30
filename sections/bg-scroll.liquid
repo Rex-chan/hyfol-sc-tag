@@ -1,0 +1,97 @@
+<section id="cjj_bgscroll" class="container--flush lazyload {% if section.settings.hidden_phone %}hidden-phone{% endif %}"
+			{% if section.settings.bgimage!=blank %}data-bgset="{{ section.settings.bgimage | img_url: '3000x' }}"{% endif %}>
+	{% if section.settings.image!=blank %}
+		<div class="cjj_content">
+			{%- capture supported_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: section.settings.image -%}{%- endcapture -%}
+			{%- assign image_url = section.settings.image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+			<img data-src="{{ image_url }}" data-widths="[{{ supported_sizes }}]" data-sizes="auto" alt="{{ section.settings.image.alt | escape }}" class="lazyload">
+		</div>
+	{% endif %}
+</section>
+
+<style>
+	#shopify-section-{{ section.id }}  #cjj_bgscroll {
+		height: 500px;
+		width: 100%;
+		background-repeat: no-repeat;
+		background-position: center center;
+		background-size: cover;
+		background-attachment: fixed;
+		text-align: right;
+	}
+	#shopify-section-{{ section.id }} .cjj_content{
+		width: 500px;
+		display: inline-block;
+		margin-top: 60px;
+		margin-right: 10%;
+	}
+	#shopify-section-{{ section.id }} .cjj_content img{
+		width: 100%;
+	}
+ @media screen and (max-width:640px) {
+	 #shopify-section-{{ section.id }}  #cjj_bgscroll {
+		 height: 280px;
+	 }
+	 #shopify-section-{{ section.id }} .cjj_content {
+		 width: 160px;
+		 margin-top: 40px;
+	 }
+ }
+</style>
+{% if section.settings.isbgscroll %}
+<script>
+  ~function () {
+    var div = document.getElementById("cjj_bgscroll");
+    var visibleHeight = document.documentElement.clientHeight;
+
+
+    function scroll(e) {
+      let visibleTop = window.scrollY;
+			let margeHeight=div.offsetTop-visibleTop;
+
+			if(margeHeight<visibleHeight){
+				div.style.backgroundPositionY=-(visibleHeight-margeHeight)*0.2+'px'
+			}
+    }
+    window.addEventListener('scroll', scroll);
+
+  }()
+</script>
+{% endif  %}
+
+{% schema %}
+{
+	"name": "背景视差滚动",
+	"settings": [
+		{
+			"type": "image_picker",
+			"id": "bgimage",
+			"label": "背景图"
+		},
+		{
+			"type": "image_picker",
+			"id": "image",
+			"label": "内容图"
+		},
+		{
+			"type": "checkbox",
+			"id": "hidden_phone",
+			"label": "移动隐藏",
+			"default":true
+		},
+		{
+			"type": "checkbox",
+			"id": "isbgscroll",
+			"label": "背景是否滚动",
+			"default":false
+		}
+	],
+	"presets": [
+		{
+			"category": "Image",
+			"name": "背景视差滚动",
+			"settings": {}
+		}
+	]
+}
+{% endschema %}

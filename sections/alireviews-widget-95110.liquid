@@ -1,0 +1,31 @@
+{% capture CFH %}{{ content_for_header  }}{% endcapture %}
+
+{% assign isAdmin =false %}
+{% if content_for_header contains 'adminBarInjector' %}
+  {% assign isAdmin = true %}
+{% endif %}
+{% if content_for_header contains "previewBarInjector.init();" %}
+ {% assign isAdmin = true %}
+{% endif %}
+{% assign avgOrderValue = 0 %}
+{% if customer.orders_count != 0 %}
+  {% assign avgOrderValue = customer.total_spent  | divided_by: customer.orders_count | divided_by:100 %}
+{% endif %}
+
+<div data-section-id="95110" data-section-type="widget-box" style="padding-top: 0; padding-bottom: 0;">
+    <div id="shopify-ali-review-widget" product-id="{{ product.id }}">
+        <div class="shop_info" shop-id="{{ shop.id }}" shop-name="{{ shop.domain }}" style="display: none;">
+            <div class="reviews"></div>
+        </div>
+
+        <iframe class="aliReviewsFrame" widget-id="95110" title="AliReviews" data-ar-src="{{ shop.metafields.alireviews.iframe_domain }}/widget/review-widget?shop_id={{ shop.id }}&widget_id=95110&type_page={{ template }}&product_id={{ product.id }}&isAdminLogin={{ isAdmin }}&star=all&customer_id={{ customer.id }}&product_in_cart={%- for item in cart.items -%}{{ item.product_id }},{%- endfor -%}&num_rand=0&total_order_values={{customer.total_spent | divided_by:100}}&avg_order_value={{ avgOrderValue }}&tag={% for tag in customer.tags %}{{ tag }},{% endfor %}&country={% for address in customer.addresses %}{{ address.country_code }}{% endfor %}&last_purchase={{ customer.last_order.created_at | date: "%Y-%m-%d %H:%M" }}&t={{ shop.metafields.alireviews.timestamp }}" height="0" width="100%" frameborder="0" scrolling="no" margin="0"></iframe>
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "Review Box 1",
+    "tag": "section",
+    "class": "index-section index-section--flush"
+}
+{% endschema %}

@@ -1,0 +1,367 @@
+<section class="container hidden-lap hidden-lap-and-up">
+
+	{%- assign foo = true -%}
+	{%- if section.settings.tab1 !=blank -%}
+		<input type="radio" name="table" class="cjj_input input1" id="tab1" {%- if foo -%}checked{%- endif -%}>
+		{%- assign foo = false -%}
+	{%- endif -%}
+	{%- if section.settings.tab2 !=blank -%}
+		<input type="radio" name="table" class="cjj_input input2" id="tab2" {%- if foo -%}checked{%- endif -%}>
+		{%- assign foo = false -%}
+	{%- endif -%}
+	{%- if section.settings.tab3 !=blank -%}
+		<input type="radio" name="table" class="cjj_input input3" id="tab3" {%- if foo -%}checked{%- endif -%}>
+		{%- assign foo = false -%}
+	{%- endif -%}
+
+	<div class="cjj_header">{{ section.settings.title }}</div>
+	<ul class="ctrl">
+		{%- if section.settings.tab1!=blank -%}
+			<li>
+				<label class="label1" for="tab1">{{ section.settings.tab1 }}</label>
+			</li>
+		{%- endif -%}
+		{%- if section.settings.tab2!=blank -%}
+			<li>
+				<label class="label2" for="tab2">{{ section.settings.tab2 }}</label>
+			</li>
+		{%- endif -%}
+		{%- if section.settings.tab3!=blank -%}
+			<li>
+				<label class="label3" for="tab3">{{ section.settings.tab3 }}</label>
+			</li>
+		{%- endif -%}
+	</ul>
+
+	<div class="tab">
+		{% if section.settings.tab1 !=blank %}
+			{%- capture product_list -%}
+			{%- assign collection = section.settings.pro1 -%}
+			{%- assign use_placeholder = true -%}
+				{%- if collection == blank -%}
+					{%- assign products = (1..3) -%}
+				{%- else -%}
+					{%- assign products = collection.products -%}
+					{%- assign use_placeholder = false -%}
+				{%- endif -%}
+
+				{%- for product in products limit: 3 -%}
+					<div class="cjj_posi">
+					{%- if use_placeholder -%}
+						{%- include 'product-item-placeholder', product: product,hide_labels:true, horizontal: true, grid_classes: '1/1--tablet 1/1--lap-and-up', show_add_to_cart: false -%}
+					{%- else -%}
+						{%- include 'product-item', product: product,hide_labels:true, horizontal: true, grid_classes: '1/1--tablet 1/1--lap-and-up', show_add_to_cart: false -%}
+					{%- endif -%}
+						{%- assign top=	forloop.index |prepend:'top'-%}
+						<div class="cjj_supbox {{ top }}">	{%- render 'cjj-sup', sup: top -%}</div>
+					</div>
+				{%- endfor -%}
+			{%- endcapture -%}
+
+			<div class="product-list section cjj_tab1" data-section-type="featured-collection"
+					 data-section-settings='{"stackable": false,"layout": "horizontal"}'>
+				{{ product_list }}
+				<div class="foot-btn"><a href="{{ section.settings.link1 }}">View All</a></div>
+			</div>
+		{% endif %}
+
+		{% if section.settings.tab2 !=blank %}
+			{%- capture product_list2 -%}
+			{%- assign collection2 = section.settings.pro2 -%}
+			{%- assign use_placeholder2 = true -%}
+				{%- if collection2 == blank -%}
+					{%- assign products2= (1..3) -%}
+				{%- else -%}
+					{%- assign products2 = collection2.products -%}
+					{%- assign use_placeholder2 = false -%}
+				{%- endif -%}
+
+				{%- for product2 in products2 limit: 3 -%}
+					<div class="cjj_posi">
+						{%- if use_placeholder2 -%}
+							{%- include 'product-item-placeholder', product: product2,hide_labels:true, horizontal: true, grid_classes: '1/1--tablet 1/1--lap-and-up', show_add_to_cart: false -%}
+						{%- else -%}
+							{%- include 'product-item', product: product2,hide_labels:true, horizontal: true, grid_classes: '1/1--tablet 1/1--lap-and-up', show_add_to_cart: false -%}
+						{%- endif -%}
+						{%- assign top=	forloop.index |prepend:'top'-%}
+						<div class="cjj_supbox {{ top }}">	{%- render 'cjj-sup', sup: top -%}</div>
+					</div>
+				{%- endfor -%}
+			{%- endcapture -%}
+			<div class="product-list section cjj_tab1" data-section-type="featured-collection"
+					 data-section-settings='{"stackable": false,"layout": "horizontal"}'>
+				{{ product_list2 }}
+				<div class="foot-btn"><a href="{{ section.settings.link2 }}">View All</a></div>
+			</div>
+		{% endif %}
+
+		{% if section.settings.tab3 !=blank %}
+			{%- capture product_list3 -%}
+			{%- assign collection3 = section.settings.pro3 -%}
+			{%- assign use_placeholde3r = true -%}
+				{%- if collection3 == blank -%}
+					{%- assign products3 = (1..3) -%}
+				{%- else -%}
+					{%- assign products3 = collection3.products -%}
+					{%- assign use_placeholder3 = false -%}
+				{%- endif -%}
+
+				{%- for product3 in products3 limit: 3 -%}
+					<div class="cjj_posi">
+						{%- if use_placeholder3 -%}
+							{%- include 'product-item-placeholder', product: product3,hide_labels:true, horizontal: true, grid_classes: '1/1--tablet 1/1--lap-and-up', show_add_to_cart: false -%}
+						{%- else -%}
+							{%- include 'product-item', product: product3,hide_labels:true, horizontal: true, grid_classes: '1/1--tablet 1/1--lap-and-up', show_add_to_cart: false -%}
+						{%- endif -%}
+						{%- assign top=	forloop.index |prepend:'top'-%}
+						<div class="cjj_supbox {{ top }}">	{%- render 'cjj-sup', sup: top -%}</div>
+					</div>
+				{%- endfor -%}
+			{%- endcapture -%}
+
+			<div class="product-list section cjj_tab1" data-section-type="featured-collection"
+					 data-section-settings='{"stackable": false,"layout": "horizontal"}'>
+				{{ product_list3 }}
+				<div class="foot-btn"><a href="{{ section.settings.link3 }}">View All</a></div>
+			</div>
+		{% endif %}
+
+	</div>
+</section>
+
+<style>
+
+	#shopify-section-{{ section.id }} {
+		background-color: #fff;
+		overflow: hidden;
+	}
+	#shopify-section-{{ section.id }} .container {
+		overflow: hidden;
+	}
+	#shopify-section-{{ section.id }} .cjj_header {
+		font-size: 2rem;
+		font-family: var(--heading-font-family);
+		font-weight: 800;
+		font-style: var(--heading-font-style);
+		text-align: center;
+	}
+
+	#shopify-section-{{ section.id }} .ctrl {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		overflow: hidden;
+		border-radius: 6px;
+	}
+
+	#shopify-section-{{ section.id }} .ctrl > li {
+		display: inline-block;
+		text-align: center;
+		background-color: #f0f0f0;
+		color: #000000;
+		font-family: var(--heading-font-family);
+		font-weight: 800;
+		font-style: var(--heading-font-style);
+		font-size: 1.3rem;
+		overflow: hidden;
+		flex: 1 0 auto;
+		padding: 10px 0;
+	}
+	#shopify-section-{{ section.id }} .ctrl label {
+		display: inline-block;
+		padding: 0 10px;
+		border-radius: 5px;
+		font-family: var(--heading-font-family);
+		font-weight: var(--heading-font-weight);
+		font-style: var(--heading-font-style);
+		transition: all 0.8s ease;
+		background-color: #fff;
+		width: 95%;
+	}
+	#shopify-section-{{ section.id }} .cjj_input {
+		display: none;
+	}
+
+	#shopify-section-{{ section.id }} .tab {
+		width: 100%;
+	}
+	#shopify-section-{{ section.id }} .tab .product-list {
+		position: absolute;
+		opacity: 0;
+		transform: translateY(-10px);
+		list-style: none;
+		flex-wrap: wrap;
+		margin-top: 10px;
+		border: none;
+	}
+	#shopify-section-{{ section.id }} .tab > div{
+	display: none;
+	}
+
+	{%- for i in (1..3) -%}
+
+	#shopify-section-{{ section.id }} .cjj_input:nth-of-type({{ i }}):checked ~ .tab > div:nth-child({{ i }}) {
+		display: flex;
+		position: relative;
+		opacity: 1;
+		top: 0;
+		transform: translateY(0px);
+		transition: all 0.8s ease;
+	}
+
+	#shopify-section-{{ section.id }} .cjj_input:nth-of-type({{ i }}):checked ~ .ctrl > li:nth-child({{ i }}) > label {
+		background: #1b1b1b;
+		color: #fff;
+	}
+
+	{%- endfor -%}
+
+	#shopify-section-{{ section.id }} .tab .product-item {
+		padding: 0 0 10px;
+		width: 100%;
+	}
+
+	#shopify-section-{{ section.id }} .product-item__image-wrapper {
+		flex: 1.5 0;
+		margin: 0;
+	}
+	#shopify-section-{{ section.id }} .product-item__info {
+		padding-top: 10%;
+	}
+	#shopify-section-{{ section.id }} .product-item__info-inner .product-item__title {
+		height: unset;
+		line-height: unset;
+		white-space: unset;
+		text-overflow: -o-ellipsis-lastline;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+	#shopify-section-{{ section.id }} .product-item__info .product-item__price-list {
+		margin-top: 1.5em;
+		text-align: left;
+	}
+	#shopify-section-{{ section.id }} .product-item__info .product-item__swatch-list {
+		text-align: left;
+	}
+	#shopify-section-{{ section.id }} .product-item::after {
+		box-shadow: none;
+	}
+	#shopify-section-{{ section.id }} .cjj_posi{
+		position: relative;
+		width: 100%;
+	}
+	#shopify-section-{{ section.id }} .cjj_supbox{
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	#shopify-section-{{ section.id }} .cjj_supbox.top1 .cjj_sup{
+		background-color: #fbb634
+	}
+	#shopify-section-{{ section.id }} .cjj_supbox.top2 .cjj_sup{
+		background-color: #999999;
+	}
+	#shopify-section-{{ section.id }} .cjj_supbox.top3 .cjj_sup{
+		background-color: #ff9752;
+	}
+	#shopify-section-{{ section.id }}  .product-list::before{
+		border: none;
+	}
+	#shopify-section-{{ section.id }} .foot-btn {
+		text-align: center;
+		width: 100%;
+		padding-top: 20px;
+	}
+	#shopify-section-{{ section.id }} .foot-btn a {
+		display: inline-block;
+		padding: 5px 25px;
+		cursor: pointer;
+		font-family: var(--heading-font-family);
+		font-weight: var(--heading-font-weight);
+		font-style: var(--heading-font-style);
+		background: var(--primary-button-background);
+		color: var(--primary-button-text-color);
+		font-size: 1.1rem;
+	}
+</style>
+
+{% schema %}
+{
+	"name": "带产品的tab选项卡",
+	"settings": [
+		{
+			"type": "text",
+			"id": "title",
+			"label": "模块标题"
+		},
+		{
+			"type": "header",
+			"content": "选项卡一"
+		},
+		{
+			"type": "text",
+			"id": "tab1",
+			"label": "选项卡标题1"
+		},
+		{
+			"type": "collection",
+			"id": "pro1",
+			"label": "产品1"
+		},
+		{
+			"type": "url",
+			"id": "link1",
+			"label": "view all链接地址"
+		},
+		{
+			"type": "header",
+			"content": "选项卡二"
+		},
+		{
+			"type": "text",
+			"id": "tab2",
+			"label": "选项卡标题2"
+		},
+		{
+			"type": "collection",
+			"id": "pro2",
+			"label": "产品2"
+		},
+		{
+			"type": "url",
+			"id": "link2",
+			"label": "view all链接地址"
+		},
+		{
+			"type": "header",
+			"content": "选项卡三"
+		},
+		{
+			"type": "text",
+			"id": "tab3",
+			"label": "选项卡标题3"
+		},
+		{
+			"type": "collection",
+			"id": "pro3",
+			"label": "产品3"
+		},
+		{
+			"type": "url",
+			"id": "link3",
+			"label": "view all链接地址"
+		}
+	],
+	"presets": [
+		{
+			"category": "Image",
+			"name": "带产品的tab选项卡",
+			"settings": {}
+		}
+	]
+}
+{% endschema %}

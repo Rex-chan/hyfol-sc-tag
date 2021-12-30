@@ -1,0 +1,78 @@
+<div class="card">
+	{%- if customer.orders.size == 0 -%}
+		<div class="card__section">
+			<div class="empty-state empty-state--extra-tight">
+				<div class="empty-state__icon">
+					{%- render 'icon', icon: 'package' -%}
+					<span class="empty-state__count">0</span>
+				</div>
+				<p class="empty-state__icon-description">{{ 'customer.general.no_orders' | t }}</p>
+				<div class="empty-state__button-container">
+					<a href="{{ routes.all_products_collection_url }}"
+						 class="empty-state__button button button--primary">{{ 'customer.general.no_orders_button' | t }}</a>
+				</div>
+			</div>
+		</div>
+	{%- else -%}
+		{%- paginate customer.orders by 8 -%}
+			{%- for order in customer.orders -%}
+				<div class="order-box">
+					<div class="order-title">
+						<div class="title-info">
+							<span class="title-info-name"><a href="{{ order.customer_url }}" >{{ 'customer.order.order' | t }}:{{ order.name }}</a></span>
+							<span
+								class="title-info-data">{{ 'customer.order.date' | t }}:{{ order.created_at | date: format: 'month_day_year' }}</span>
+						</div>
+						<div class="title-state">
+							<span>{{ order.financial_status_label }}</span><br/>
+							<span>{{ order.fulfillment_status }}</span>
+						</div>
+					</div>
+					<ul class="order-body">
+						{%- for pro in order.line_items -%}
+							<li>
+								<div class="pro-img">
+									<div>
+										<a href="{{ pro.url }}">
+											<img src="{{ pro.image | img_url: '90x90', scale: 2 }}" alt="{{ pro.image.alt | escape }}">
+										</a>
+									</div>
+								</div>
+								<div class="pro-info">
+									<div class="info-title"><a href="{{ pro.url }}">{{ pro.product.title }}</a></div>
+									<div class="info-price">{{ pro.final_line_price | money }}</div>
+									<div class="info-style">
+										<span class="style-title">{{ pro.variant.title }}</span>
+										<span class="style-num">× {{ pro.quantity }}</span>
+									</div>
+								</div>
+							</li>
+						{%- endfor -%}
+					</ul>
+					<div class="order-footer">
+						<div class="shipping">
+							<span>{{ 'customer.order.shipping' | t }}:{{ order.shipping_price | money }}</span>
+						</div>
+						<div class="all-total">
+							<span class="total">{{ 'customer.order.total' | t }}:{{ order.total_price | money }}</span>
+						</div>
+					</div>
+				</div>
+			{%- endfor -%}
+		{%- render 'pagination', paginate: paginate -%}
+		{% assign dm_paginate_by = paginate.page_size %}
+		{%- endpaginate -%}
+	{%- endif -%}
+</div>
+
+<style>
+
+</style>
+
+{% schema %}
+{
+	"name": "test",
+	"settings": [
+	]
+}
+{% endschema %}

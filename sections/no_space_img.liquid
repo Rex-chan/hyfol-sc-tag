@@ -1,0 +1,72 @@
+<style>
+	#shopify-section-{{ section.id }},
+	#shopify-section-{{ section.id }} .heading {
+	}
+	{% if section.settings.shadow %}
+	#shopify-section-{{ section.id }}{
+		box-shadow: 0px 1px 8px rgba(0,0,0,0.2);
+		margin-bottom: 10px;
+	}
+	{% endif %}
+
+	.cjj img{
+		width: 100%;
+	}
+</style>
+
+	{%- if section.settings.bg_image != blank -%}
+		{%- if section.settings.web_bg_image -%}
+			{%- capture web_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: section.settings.web_bg_image -%}{%- endcapture -%}
+			{%- assign web_image_url = section.settings.web_bg_image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+		{%- else -%}
+			{%- capture web_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: section.settings.bg_image -%}{%- endcapture -%}
+			{%- assign web_image_url = section.settings.bg_image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+		{%- endif -%}
+
+		{%- capture supported_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: section.settings.bg_image -%}{%- endcapture -%}
+		{%- assign image_url = section.settings.bg_image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+		{%- if section.settings.link != blank  -%}
+			<a href="{{ section.settings.link }}" class="cjj">
+				<img data-src="{{ image_url }}" data-widths="[{{ supported_sizes }}]" data-sizes="auto" alt="{{ section.settings.bg_image.alt | escape }}" class="lazyload hidden-phone">
+				<img data-src="{{ web_image_url }}" data-widths="[{{ web_sizes }}]" data-sizes="auto" alt="{{ section.settings.web_bg_image.alt | escape }}" class="lazyload hidden-tablet-and-up">
+			</a>
+		{%- else  -%}
+			<div class="cjj">
+				<img data-src="{{ image_url }}" data-widths="[{{ supported_sizes }}]" data-sizes="auto" alt="{{ section.settings.bg_image.alt | escape }}" class=" lazyload  hidden-phone">
+				<img data-src="{{ web_image_url }}" data-widths="[{{ web_sizes }}]" data-sizes="auto" alt="{{ section.settings.web_bg_image.alt | escape }}" class="lazyload   hidden-tablet-and-up">
+			</div>
+		{%- endif -%}
+
+	{%- endif -%}
+{% schema %}
+{
+	"name": "清纯美少女",
+	"settings": [
+		{
+			"type":"image_picker",
+			"id":"bg_image",
+			"label":"桌面端背景图片"
+		},{
+			"type":"image_picker",
+			"id":"web_bg_image",
+			"label":"移动端背景图片"
+		},{
+			"type": "url",
+			"id": "link",
+			"label": "跳转链接"
+		},{
+			"type": "checkbox",
+			"id": "shadow",
+			"label": "图片下阴影",
+			"default":false
+		}
+	],
+	"presets": [
+		{
+			"category": "Image",
+			"name": "清纯美少女",
+			"settings": {}
+		}
+	]
+}
+{% endschema %}

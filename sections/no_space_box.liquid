@@ -1,0 +1,77 @@
+<style>
+	#shopify-section-{{ section.id }},
+	#shopify-section-{{ section.id }} .heading {
+	}
+	#shopify-section-{{ section.id }} {
+	}
+	.cjj img {
+		width: 100%;
+	}
+</style>
+{%- for block in section.blocks -%}
+	{%- if block.settings.image != blank -%}
+		{%- if block.settings.web_image!=blank -%}
+			{%- capture web_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: block.settings.web_image -%}{%- endcapture -%}
+			{%- assign web_image_url = block.settings.web_image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+		{%- else -%}
+			{%- capture web_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: block.settings.image -%}{%- endcapture -%}
+			{%- assign web_image_url = block.settings.image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+		{%- endif -%}
+
+		{%- capture supported_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: block.settings.image -%}{%- endcapture -%}
+		{%- assign image_url = block.settings.image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+		{%- if block.settings.link != blank -%}
+			<a href="{{ block.settings.link }}" class="cjj">
+				<img data-src="{{ image_url }}" data-widths="[{{ supported_sizes }}]" data-sizes="auto"
+						 alt="{{ block.settings.image.alt | escape }}" class="lazyload hidden-phone">
+				<img data-src="{{ web_image_url }}" data-widths="[{{ web_sizes }}]" data-sizes="auto"
+						 alt="{{ block.settings.web_image.alt | escape }}" class="lazyload hidden-tablet-and-up">
+			</a>
+		{%- else -%}
+			<div class="cjj">
+				<img data-src="{{ image_url }}" data-widths="[{{ supported_sizes }}]" data-sizes="auto"
+						 alt="{{ block.settings.image.alt | escape }}" class=" lazyload  hidden-phone">
+				<img data-src="{{ web_image_url }}" data-widths="[{{ web_sizes }}]" data-sizes="auto"
+						 alt="{{ block.settings.web_image.alt | escape }}" class="lazyload   hidden-tablet-and-up">
+			</div>
+		{%- endif -%}
+	{%- endif -%}
+{%- endfor -%}
+
+{% schema %}
+{
+	"name": "美少女天团",
+	"settings": [
+	],
+	"blocks": [
+		{
+			"type": "image",
+			"name": "天团成员",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "桌面端图片"
+				},
+				{
+					"type": "image_picker",
+					"id": "web_image",
+					"label": "移动端图片"
+				},
+				{
+					"type": "url",
+					"id": "url",
+					"label": "链接地址"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"category": "Image",
+			"name": "美少女天团",
+			"settings": {}
+		}
+	]
+}
+{% endschema %}

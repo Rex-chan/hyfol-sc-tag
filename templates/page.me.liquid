@@ -1,0 +1,210 @@
+<section>
+	<div class="header-me container">
+			<ul class="no-logged">
+				<li class="text-l"><a href="{{ routes.account_login_url }}?return_url={{ routes.account_url  }}">LOGIN &gt;</a></li>
+				<li class="text-r"><a href="{{ routes.account_register_url }}">CREATE ACCOUNT&gt;</a></li>
+			</ul>
+	</div>
+	<div class="order-me container">
+		<h2>{{- 'customer.general.orders' | t -}}</h2>
+
+		<div class="icon-box">
+			<ul class="icons">
+				<li>
+					<a href="{{ routes.account_login_url }}?return_url={{ routes.account_url  }}">
+						{%- render 'icon', icon: 'cjj_all' -%}<br/>
+						<span>All</span>
+					</a>
+				</li>
+				<li>
+					<a href="{{ routes.account_login_url }}?return_url={{ routes.account_url  }}">
+						{%- render 'icon', icon: 'cjj_unpaid' -%}<br/>
+						<span>Unpaid</span>
+					</a>
+				</li>
+				<li>
+					<a href="{{ routes.account_login_url }}?return_url={{ routes.account_url  }}">
+						{%- render 'icon', icon: 'cjj_processing' -%}<br/>
+						<span>Processing</span>
+					</a>
+				</li>
+				<li>
+					<a href="{{ routes.account_login_url }}?return_url={{ routes.account_url  }}">
+						{%- render 'icon', icon: 'cjj_shipped' -%}<br/>
+						<span>Shipped</span>
+					</a>
+				</li>
+				<li>
+					<a href="{{ routes.account_login_url }}?return_url={{ routes.account_url  }}">
+						{%- render 'icon', icon: 'cjj_payment' -%}<br/>
+						<span>Payment</span>
+					</a>
+				</li>
+				<li>
+					<a href="{{ routes.account_login_url }}?return_url={{ routes.account_url  }}">
+						{%- render 'icon', icon: 'cjj_completed' -%}<br/>
+						<span>Completed</span>
+					</a>
+				</li>
+				<li id="post_sale">
+						{%- render 'icon', icon: 'cjj_post_sale' -%}<br/>
+						<span>Post-sale</span>
+				</li>
+			</ul>
+		</div>
+
+	</div>
+	<div class="post" id="post">
+		<div class="container">
+			<h3>
+				{%- render 'icon', icon: 'bi-email' -%}&nbsp;&nbsp;
+				<a href="mailto:contactus@hyfol.com" target="_blank" rel="noopener" aria-describedby="a11y-new-window-message">contactus@hyfol.com</a>
+			</h3>
+		</div>
+	</div>
+	<div class="advert-me container">
+		<ul>
+			<li><a href="{{ routes.cart_url }}">SHOPPING CART</a></li>
+			<li><a href="{{ routes.root_url }}collections/hot-sale">HOT SALE</a></li>
+		</ul>
+	</div>
+</section>
+<style>
+	#shopify-section-footer {
+		display: none;
+	}
+	body {
+		min-height: 100vh;
+		background: #f0f0f0;
+	}
+	main ul, li {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.header-me {
+		background-color: #fff;
+	}
+
+	.header-me .account-box {
+		height: 0;
+		overflow: hidden;
+		transition: all 0.4s ease;
+	}
+	#account-input:checked ~ .account-box {
+		height: 130px;
+		transition: all 0.4s ease;
+	}
+	.header-me .logged > .tab {
+		transition: all 0.4s ease;
+	}
+	.header-me .no-logged {
+		display: flex;
+		padding: 20px 0;
+	}
+
+	.header-me .no-logged li {
+		flex: 1 0 auto;
+	}
+
+	.header-me .no-logged li a {
+		font-family: var(--heading-font-family);
+		font-weight: var(--heading-font-weight);
+		font-style: var(--heading-font-style);
+	}
+
+	.order-me {
+		background-color: #fff;
+		margin-top: 10px;
+	}
+
+	.order-me h2 {
+		font-family: var(--heading-font-family);
+		font-weight: var(--heading-font-weight);
+		font-style: var(--heading-font-style);
+		padding: 10px 0;
+	}
+	.order-me .icon-box {
+		overflow-x: scroll;
+		width: 100%;
+		padding-bottom: 10px;
+	}
+
+	.order-me .icons {
+		width: 160%;
+		display: flex;
+		justify-content: space-between;
+	}
+	.order-me .icons a{
+		display: inline-block;
+	}
+	.order-me .icons li{
+		cursor: pointer;
+	}
+
+
+	.post{
+		background-color: #fff;
+		text-align: center;
+		min-height: 100px;
+		margin-top: 10px;
+		display: none;
+	}
+	.post h3{
+		line-height: 100px;
+		font-size: 1.3rem;
+	}
+
+	.order-me .icon {
+		font-size: 2em;
+	}
+	.order-me span {
+		font-size: 0.85rem;
+	}
+	.icon-box li {
+		display: inline-block;
+		text-align: center;
+	}
+
+	.text-l {
+		text-align: left;
+	}
+
+	.text-r {
+		text-align: right;
+	}
+	.hidden {
+		display: none;
+	}
+
+	.advert-me {
+		background-color: #fff;
+		margin-top: 10px;
+		min-height: 400px;
+	}
+	.advert-me ul {
+		padding: 50px 20px 0;
+	}
+	.advert-me li {
+		height: 50px;
+		line-height: 50px;
+		width: 100%;
+		text-align: center;
+		margin-bottom: 20px;
+		background-color: #707070;
+	}
+	.advert-me li a {
+		font-family: var(--heading-font-family);
+		font-weight: var(--heading-font-weight);
+		font-style: var(--heading-font-style);
+		color: #ffffff;
+		text-shadow: -2px 1px 3px rgba(0, 0, 0, .5);
+	}
+</style>
+
+<script>
+ document.querySelector("#post_sale").onclick=()=>{
+   document.querySelector('#post').style.display='block'
+ }
+</script>

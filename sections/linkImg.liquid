@@ -1,0 +1,188 @@
+<style>
+	#shopify-section-{{ section.id }},
+	#shopify-section-{{ section.id }} .heading {
+	}
+	#shopify-section-{{ section.id }} .image_link img{
+		width: 100%;
+	}
+
+
+</style>
+
+<section class="{% if section.settings.hidWeb%}hidden-pocket{% endif %}  {% if section.settings.hidDesk%}hidden-lap hidden-lap-and-up{% endif %}">
+	{%- if section.settings.image != blank -%}
+		{%- capture supported_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: section.settings.image -%}{%- endcapture -%}
+		{%- assign image_url = section.settings.image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+			<div class="image_link {%  if section.settings.line %}line{%  endif %} ">
+				<img data-src="{{ image_url }}" data-widths="[{{ supported_sizes }}]" data-sizes="auto" alt="{{ section.settings.bg_image.alt | escape }}" class=" lazyload">
+				{%- for block in section.blocks -%}
+					<a href="{{ block.settings.link }}" class="{{ block.settings.heading }}"></a>
+				{%- endfor -%}
+			</div>
+	{%- endif -%}
+
+</section>
+
+<style>
+	#shopify-section-{{ section.id }} {
+		width: 100%;
+		overflow: hidden;
+		padding: {{ section.settings.tpadding }}px {{ section.settings.rpadding }}px {{ section.settings.bpadding }}px {{ section.settings.lpadding }}px;
+	}
+	#shopify-section-{{ section.id }} .image_link{
+	position: relative;
+}
+	#shopify-section-{{ section.id }} .line a{
+	border: 1px solid red;
+}
+	#shopify-section-{{ section.id }}  a{
+	cursor: pointer;
+}
+	{% for block in section.blocks %}
+	#shopify-section-{{ section.id }} .{{ block.settings.heading }}{
+		width: {{ block.settings.width }}%;
+		height: {{ block.settings.height }}%;
+		top: {{ block.settings.top }}%;
+		left: {{ block.settings.left }}%;
+		position: absolute;
+	}
+	{% endfor %}
+</style>
+
+{% schema %}
+{
+	"name": "ㄟ(▔,▔)ㄏ",
+	"settings": [
+		{
+			"type":"checkbox",
+			"id":"hidDesk",
+			"label":"桌面端隐藏",
+			"default":false
+		},
+		{
+			"type":"checkbox",
+			"id":"hidWeb",
+			"label":"移动端隐藏",
+			"default":false
+		},
+		{
+			"type":"checkbox",
+			"id":"line",
+			"label":"显示辅助线",
+			"default":true
+		},
+		{
+			"type":"image_picker",
+			"id":"image",
+			"label":"图片"
+		},
+		{
+			"type":"range",
+			"id":"tpadding",
+			"min":0,
+			"max":100,
+			"step":1,
+			"unit":"px",
+			"label":"上边距",
+			"default":0
+		},
+		{
+			"type":"range",
+			"id":"rpadding",
+			"min":0,
+			"max":100,
+			"step":1,
+			"unit":"px",
+			"label":"右边距",
+			"default":0
+		},
+		{
+			"type":"range",
+			"id":"bpadding",
+			"min":0,
+			"max":100,
+			"step":1,
+			"unit":"px",
+			"label":"下边距",
+			"default":0
+		},
+		{
+			"type":"range",
+			"id":"lpadding",
+			"min":0,
+			"max":100,
+			"step":1,
+			"unit":"px",
+			"label":"左边距",
+			"default":0
+		}
+	],
+	"blocks":[
+		{
+			"type":"link",
+			"name":"热区",
+			"settings":[
+				{
+					"type":"text",
+					"id":"heading",
+					"label":"备注名",
+					"default":"(´థ౪థ）σ",
+					"info":"热区名称不可重复,使用字母和数字，不能出现符号和空格！！！！"
+				},{
+					"type":"url",
+					"id":"link",
+					"label":"链接"
+				},
+				{
+					"type":"range",
+					"id":"left",
+					"min":0,
+					"max":100,
+					"step":1,
+					"unit":"%",
+					"label":"左边框",
+					"default":0
+				},
+				{
+					"type":"range",
+					"id":"top",
+					"min":0,
+					"max":100,
+					"step":1,
+					"unit":"%",
+					"label":"上边框",
+					"default":0
+				},
+				{
+					"type":"range",
+					"id":"width",
+					"min":0,
+					"max":100,
+					"step":1,
+					"unit":"%",
+					"label":"胖瘦",
+					"default":10
+				},
+				{
+					"type":"range",
+					"id":"height",
+					"min":0,
+					"max":100,
+					"step":1,
+					"unit":"%",
+					"label":"高矮",
+					"default":10
+				}
+			]
+
+		}
+	],
+	"presets": [
+		{
+			"category": "Image",
+			"name": "热点链接图片",
+			"settings": {}
+		}
+	]
+}
+{% endschema %}

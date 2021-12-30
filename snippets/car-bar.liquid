@@ -1,0 +1,154 @@
+{%- if settings.car_bar_price1 !=blank -%}
+	{%- assign bar_price1 = settings.car_bar_price1|times:100.00 -%}
+	{%- assign bar_perc1 = settings.car_bar_price1|minus:settings.car_bar_price1-%}
+	{%- assign bar_max = settings.car_bar_price1-%}
+{%- endif -%}
+{%- if settings.car_bar_price2 !=blank -%}
+	{%- assign bar_price2 = settings.car_bar_price2|times:100.00 -%}
+	{%- assign bar_perc2 = settings.car_bar_price2|minus:settings.car_bar_price1-%}
+	{%- assign bar_max = settings.car_bar_price2|minus:settings.car_bar_price1 -%}
+{%- endif -%}
+{%- if settings.car_bar_price3 !=blank -%}
+	{%- assign bar_price3 = settings.car_bar_price3|times:100.00 -%}
+	{%- assign bar_perc3 = settings.car_bar_price3|minus:settings.car_bar_price1 -%}
+	{%- assign bar_max = settings.car_bar_price3|minus:settings.car_bar_price1-%}
+{%- endif -%}
+{%- if settings.car_bar_price4 !=blank -%}
+	{%- assign bar_price4 = settings.car_bar_price4|times:100.00 -%}
+	{%- assign bar_perc4 = settings.car_bar_price4|minus:settings.car_bar_price1-%}
+	{%- assign bar_max = settings.car_bar_price4|minus:settings.car_bar_price1 -%}
+{%- endif -%}
+
+	{%- capture bar_current -%}
+		{%- if cart.original_total_price <=bar_price1 -%}
+				{{- cart.original_total_price|divided_by:bar_price1|times:10 -}}
+		{%- else -%}
+			{{- cart.original_total_price | minus:bar_price1 | divided_by:bar_max|divided_by:100|times:90.00 | plus:10-}}
+		{%- endif -%}
+	{%- endcapture -%}
+	{%- assign bar_current =bar_current|abs -%}
+
+{%- if bar_current > 100 -%}
+	{%- assign bar_current = 100 -%}
+{%- endif -%}
+
+<div class="car-bar-box">
+	<div class="car_bar_title h3 ">Bonus:</div>
+	<div class="car_lucky d-none">
+		<p class="page__description d-inline-block not-conversion">Get free necklace with purchase of $79+</p>
+	</div>
+	<div class="car_postage">
+		{%- render:'icon',icon:'cjj_postage' -%}
+		{%- if settings.cart_show_free_shipping_threshold -%}
+			{%- assign threshold_in_cents = settings.cart_free_shipping_threshold | times: 100 -%}
+			{%- if cart.total_price >= threshold_in_cents -%}
+				<p class="page__description d-inline-block">{{ 'cart.general.free_shipping' | t }}</p>
+			{%- else -%}
+				{%- capture remaining_amount -%}<span><span class="wh-original-cart-total"><span
+							class='wh-original-price'>{{ cart.total_price | minus: threshold_in_cents | abs | money }}</span></span><span
+						class="wh-cart-total"></span><div class="additional-notes d-inline-block"><span
+							class="wh-minimums-note"></span><span class="wh-extra-note"></span></div></span>{%- endcapture -%}
+				<p
+					class="page__description d-inline-block">{{ 'cart.general.free_shipping_remaining_html' | t: remaining_amount: remaining_amount }}</p>
+			{%- endif -%}
+		{%- endif -%}
+	</div>
+	<div class="car_discount">
+		{% for item in cart.items limit:1 %}
+			{% if item.total_discount > 0 %}
+				{% render:'icon',icon:'cjj_discount' %}{{ item.message }}
+			{% endif %}
+		{% endfor %}
+	</div>
+	{%- if settings.show_car_bar -%}
+		<div class="car-bar">
+			<div class="bar-inner">
+				<div class="bar-current">
+					<span class="current-price"></span>
+				</div>
+				{%- if settings.car_bar_info1 != blank -%}
+					<div class="bar-item item1 	{% if cart.original_total_price >= bar_price1 %}active{% endif %}">
+						<div class="item-info"><span>{{ settings.car_bar_info1 }}</span></div>
+						<div class="item-status">
+							<span class="status-off">
+						<svg class="icon" viewBox="0 0 1024 1024"><path
+								d="M298.666667 341.333333V226.773333C298.666667 103.68 375.68 0 478.208 0h67.584C648.192 0 725.333333 103.808 725.333333 226.773333V341.333333h85.546667C857.898667 341.333333 896 379.52 896 426.410667v512.512A85.077333 85.077333 0 0 1 810.88 1024H213.12A85.162667 85.162667 0 0 1 128 938.922667V426.410667C128 379.434667 166.101333 341.333333 213.12 341.333333H298.666667z m85.333333 0h256V226.773333C640 146.346667 594.602667 85.333333 545.792 85.333333h-67.584C429.226667 85.333333 384 146.261333 384 226.773333V341.333333z m170.666667 329.984c25.6-14.72 42.666667-42.325333 42.666666-73.984 0-47.445333-38.186667-85.333333-85.333333-85.333333-47.445333 0-85.333333 38.186667-85.333333 85.333333 0 31.786667 17.152 59.306667 42.666666 73.984v96.298667a42.666667 42.666667 0 1 0 85.333334 0.426667v-96.725334z"></path></svg>
+					</span>
+							<span class="status-open">
+						<svg class="icon" viewBox="0 0 1024 1024"><path
+								d="M512 0C229.216 0 0 229.248 0 512c0 282.784 229.216 512 512 512 282.752 0 512-229.216 512-512 0-282.752-229.248-512-512-512z m292.608 357.024l-320 384c-12.128 14.56-30.08 23.008-49.024 23.072h-0.128a63.936 63.936 0 0 1-48.992-22.88l-167.52-199.488a64 64 0 1 1 97.952-82.368l118.336 140.96 271.04-325.248a64.032 64.032 0 0 1 98.336 81.952z"></path></svg>
+					</span>
+						</div>
+						<div class="item-price"><span>{{ settings.car_bar_price1|times:100.00|money }}</span></div>
+					</div>
+				{%- endif -%}
+				{%- if settings.car_bar_info2 != blank -%}
+					<div class="bar-item item2 {% if cart.original_total_price >= bar_price2 %}active{% endif %}">
+						<div class="item-info"><span>{{ settings.car_bar_info2 }}</span></div>
+						<div class="item-status">
+							<span class="status-off">
+						<svg class="icon" viewBox="0 0 1024 1024"><path
+								d="M298.666667 341.333333V226.773333C298.666667 103.68 375.68 0 478.208 0h67.584C648.192 0 725.333333 103.808 725.333333 226.773333V341.333333h85.546667C857.898667 341.333333 896 379.52 896 426.410667v512.512A85.077333 85.077333 0 0 1 810.88 1024H213.12A85.162667 85.162667 0 0 1 128 938.922667V426.410667C128 379.434667 166.101333 341.333333 213.12 341.333333H298.666667z m85.333333 0h256V226.773333C640 146.346667 594.602667 85.333333 545.792 85.333333h-67.584C429.226667 85.333333 384 146.261333 384 226.773333V341.333333z m170.666667 329.984c25.6-14.72 42.666667-42.325333 42.666666-73.984 0-47.445333-38.186667-85.333333-85.333333-85.333333-47.445333 0-85.333333 38.186667-85.333333 85.333333 0 31.786667 17.152 59.306667 42.666666 73.984v96.298667a42.666667 42.666667 0 1 0 85.333334 0.426667v-96.725334z"></path></svg>
+					</span>
+							<span class="status-open">
+						<svg class="icon" viewBox="0 0 1024 1024"><path
+								d="M512 0C229.216 0 0 229.248 0 512c0 282.784 229.216 512 512 512 282.752 0 512-229.216 512-512 0-282.752-229.248-512-512-512z m292.608 357.024l-320 384c-12.128 14.56-30.08 23.008-49.024 23.072h-0.128a63.936 63.936 0 0 1-48.992-22.88l-167.52-199.488a64 64 0 1 1 97.952-82.368l118.336 140.96 271.04-325.248a64.032 64.032 0 0 1 98.336 81.952z"></path></svg>
+					</span>
+						</div>
+						<div class="item-price"><span>{{ settings.car_bar_price2|times:100.00|money }}</span></div>
+					</div>
+				{%- endif -%}
+				{%- if settings.car_bar_info3 != blank -%}
+					<div class="bar-item item3 {% if cart.original_total_price >= bar_price3 %}active{% endif %}">
+						<div class="item-info"><span>{{ settings.car_bar_info3 }}</span></div>
+						<div class="item-status">
+							<span class="status-off">
+						<svg class="icon" viewBox="0 0 1024 1024"><path
+								d="M298.666667 341.333333V226.773333C298.666667 103.68 375.68 0 478.208 0h67.584C648.192 0 725.333333 103.808 725.333333 226.773333V341.333333h85.546667C857.898667 341.333333 896 379.52 896 426.410667v512.512A85.077333 85.077333 0 0 1 810.88 1024H213.12A85.162667 85.162667 0 0 1 128 938.922667V426.410667C128 379.434667 166.101333 341.333333 213.12 341.333333H298.666667z m85.333333 0h256V226.773333C640 146.346667 594.602667 85.333333 545.792 85.333333h-67.584C429.226667 85.333333 384 146.261333 384 226.773333V341.333333z m170.666667 329.984c25.6-14.72 42.666667-42.325333 42.666666-73.984 0-47.445333-38.186667-85.333333-85.333333-85.333333-47.445333 0-85.333333 38.186667-85.333333 85.333333 0 31.786667 17.152 59.306667 42.666666 73.984v96.298667a42.666667 42.666667 0 1 0 85.333334 0.426667v-96.725334z"></path></svg>
+					</span>
+							<span class="status-open">
+						<svg class="icon" viewBox="0 0 1024 1024"><path
+								d="M512 0C229.216 0 0 229.248 0 512c0 282.784 229.216 512 512 512 282.752 0 512-229.216 512-512 0-282.752-229.248-512-512-512z m292.608 357.024l-320 384c-12.128 14.56-30.08 23.008-49.024 23.072h-0.128a63.936 63.936 0 0 1-48.992-22.88l-167.52-199.488a64 64 0 1 1 97.952-82.368l118.336 140.96 271.04-325.248a64.032 64.032 0 0 1 98.336 81.952z"></path></svg>
+					</span>
+						</div>
+						<div class="item-price"><span>{{ settings.car_bar_price3|times:100.00|money }}</span></div>
+					</div>
+				{%- endif -%}
+				{%- if settings.car_bar_info4 != blank -%}
+					<div class="bar-item item4 {% if cart.original_total_price >= bar_price4 %}active{% endif %}">
+						<div class="item-info"><span>{{ settings.car_bar_info4 }}</span></div>
+						<div class="item-status">
+							<span class="status-off">
+						<svg class="icon" viewBox="0 0 1024 1024"><path
+								d="M298.666667 341.333333V226.773333C298.666667 103.68 375.68 0 478.208 0h67.584C648.192 0 725.333333 103.808 725.333333 226.773333V341.333333h85.546667C857.898667 341.333333 896 379.52 896 426.410667v512.512A85.077333 85.077333 0 0 1 810.88 1024H213.12A85.162667 85.162667 0 0 1 128 938.922667V426.410667C128 379.434667 166.101333 341.333333 213.12 341.333333H298.666667z m85.333333 0h256V226.773333C640 146.346667 594.602667 85.333333 545.792 85.333333h-67.584C429.226667 85.333333 384 146.261333 384 226.773333V341.333333z m170.666667 329.984c25.6-14.72 42.666667-42.325333 42.666666-73.984 0-47.445333-38.186667-85.333333-85.333333-85.333333-47.445333 0-85.333333 38.186667-85.333333 85.333333 0 31.786667 17.152 59.306667 42.666666 73.984v96.298667a42.666667 42.666667 0 1 0 85.333334 0.426667v-96.725334z"></path></svg>
+					</span>
+							<span class="status-open">
+						<svg class="icon" viewBox="0 0 1024 1024"><path
+								d="M512 0C229.216 0 0 229.248 0 512c0 282.784 229.216 512 512 512 282.752 0 512-229.216 512-512 0-282.752-229.248-512-512-512z m292.608 357.024l-320 384c-12.128 14.56-30.08 23.008-49.024 23.072h-0.128a63.936 63.936 0 0 1-48.992-22.88l-167.52-199.488a64 64 0 1 1 97.952-82.368l118.336 140.96 271.04-325.248a64.032 64.032 0 0 1 98.336 81.952z"></path></svg>
+					</span>
+						</div>
+						<div class="item-price"><span>{{ settings.car_bar_price4|times:100.00|money }}</span></div>
+					</div>
+				{%- endif -%}
+			</div>
+		</div>
+	{%- endif -%}
+</div>
+
+<style>
+	.car-bar .item1 {
+		left: {{ bar_perc1 |times:1.00| divided_by:bar_max | times:80.00  |plus:20}}%;
+	}
+	.car-bar .item2 {
+		left: {{ bar_perc2 |times:1.00| divided_by:bar_max | times:80.00  |plus:20}}%;
+	}
+	.car-bar .item3 {
+		left: {{ bar_perc3 |times:1.00| divided_by:bar_max | times:80.00  |plus:20}}%;
+	}
+	.car-bar .item4 {
+		left: {{ bar_perc4 |times:1.00| divided_by:bar_max | times:80.00  |plus:20}}%;
+	}
+	.car-bar .bar-current {
+		width: {{- bar_current-}}%;
+	}
+</style>

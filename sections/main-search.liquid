@@ -1,0 +1,350 @@
+{%- comment -%}We start by creating a lot of useful variables !{%- endcomment -%}
+
+{%- assign view_mode = cart.attributes.collection_layout | default: section.settings.default_view_layout -%}
+{%- assign filtered_terms = search.terms -%}
+
+{%- assign items_per_page = cart.attributes.collection_products_per_page | default: 24 -%}
+
+{%- if filtered_terms contains ' AND ' -%}
+  {%- assign filtered_terms = filtered_terms | split: ' AND ' | last -%}
+{%- else -%}
+  {%- assign filtered_terms = filtered_terms | split: 'product_type:' | last -%}
+{%- endif -%}
+
+{%- assign quick_links_menu = linklists[section.settings.quick_links] -%}
+
+{%- if quick_links_menu.links.size > 0 -%}
+  {%- assign has_filters = true -%}
+  {%- capture grid_classes -%}1/3--tablet-and-up 1/{{ section.settings.products_per_row }}--desk{%- endcapture -%}
+{%- else -%}
+  {%- assign has_filters = false -%}
+  {%- capture grid_classes -%}1/3--tablet 1/{{ section.settings.products_per_row }}--lap-and-up{%- endcapture -%}
+{%- endif -%}
+
+{%- capture section_settings -%}
+{
+  "currentSortBy": "",
+  "currentTags": [],
+  "filterMode": "",
+  "defaultLayout": {{ section.settings.default_view_layout | json }},
+  "defaultProductsPerPage": 24,
+  "isAutomatic": true,
+  "gridClasses": {{ grid_classes | json }}
+}
+{%- endcapture -%}
+
+<section data-section-id="{{ section.id }}" data-section-type="collection" data-section-settings='{{ section_settings }}'>
+  <div class="container {% if search.performed and search.results_count > 0 %}container--flush{% endif %}">
+    {%- if search.performed and search.results_count > 0 -%}
+      <div class="page__sub-header">
+        <nav aria-label="{{ 'general.breadcrumb.title' | t }}" class="breadcrumb">
+          <ol class="breadcrumb__list" role="list">
+            <li class="breadcrumb__item">
+              <a class="breadcrumb__link link" href="{{ routes.root_url }}">{{ 'general.breadcrumb.home' | t }}</a> {%- render 'icon', icon: 'arrow-right' -%}
+            </li>
+
+            <li class="breadcrumb__item">
+              <span class="breadcrumb__link" aria-current="page">{{ 'search.general.title_with_terms' | t: terms: filtered_terms }}</span>
+            </li>
+          </ol>
+        </nav>
+      </div>
+    {%- endif -%}
+
+    {%- if search.performed -%}
+      {%- if search.results_count == 0 -%}
+        <div class="empty-state">
+          <p class="empty-state__heading heading h1">{{ 'search.general.title' | t }}</p>
+          <p class="empty-state__description">{{ 'search.general.no_results_with_terms' | t: terms: filtered_terms }}</p>
+
+          <form class="empty-state__quick-form" action="{{ routes.search_url }}" method="get">
+            <input type="hidden" name="type" value="product">
+            <input type="hidden" name="options[prefix]" value="last">
+            <input type="hidden" name="options[unavailable_products]" value="{{ settings.search_unavailable_products }}">
+
+            <div class="form__connected-item">
+              <div class="form__input-wrapper form__input-wrapper--labelled">
+                <input id="search" type="text" class="form__field form__field--text" name="q" autocomplete="off" autocorrect="off">
+                <label for="search" class="form__floating-label">{{ 'search.general.input_placeholder' | t }}</label>
+              </div>
+
+              <button type="submit" class="form__connection button button--primary" aria-label="{{ 'search.general.input_placeholder' | t }}">{% render 'icon', icon: 'search' %}</button>
+            </div>
+          </form>
+
+          <a href="{{ routes.root_url }}" class="empty-state__link link link--accented">{{ 'search.general.go_back_home' | t }}</a>
+        </div>
+      {%- else -%}
+        {%- paginate search.results by items_per_page -%}
+          <div class="page__content">
+            <div {% if has_filters %}class="layout"{% endif %}>
+              {%- if has_filters -%}
+                <div class="layout__section layout__section--secondary hidden-pocket">
+                  <div class="card">
+                    {%- if quick_links_menu.links.size > 0 -%}
+                      <div class="card__section card__section--tight">
+                        <p class="card__title--small heading">{{ quick_links_menu.title }}</p>
+
+                        <ul class="collection__filter-linklist" role="list">
+                          {%- for link in quick_links_menu.links -%}
+                            <li>
+                              {%- if link.links.size > 0 -%}
+                                {%- capture link_id -%}filter-{% increment link_id %}{%- endcapture -%}
+
+                                <button class="collection__filter-link link link--primary " data-action="toggle-collapsible" aria-controls="{{ link_id }}" aria-expanded="false">
+                                  {{ link.title }} {% if link.type == 'collection_link' %}({{ link.object.products_count }}){% endif %} {%- render 'icon', icon: 'arrow-bottom' -%}
+                                </button>
+
+                                <div id="{{ link_id }}" class="collection__filter-collapsible" aria-hidden="true">
+                                  <ul class="collection__filter-linklist" role="list">
+                                    {%- for sub_link in link.links -%}
+                                      <li>
+                                        <a href="{{ sub_link.url }}" class="collection__filter-link link link--primary">{{ sub_link.title }} {% if sub_link.type == 'collection_link' %}({{ sub_link.object.products_count }}){% endif %}</a>
+                                      </li>
+                                    {%- endfor -%}
+                                  </ul>
+                                </div>
+                              {%- else -%}
+                                <a href="{{ link.url }}" class="collection__filter-link link link--primary">{{ link.title }} {% if link.type == 'collection_link' %}({{ link.object.products_count }}){% endif %}</a>
+                              {%- endif -%}
+                            </li>
+                          {%- endfor -%}
+                        </ul>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+
+              <div {% if has_filters %}class="layout__section"{% endif %}>
+                {%- if search.results_count > 0 -%}
+                  <div class="collection">
+                    <div class="card">
+                      <header class="card__header card__header--tight">
+                        {%- comment -%}
+                        IMPLEMENTATION NOTE: unfortunately I was forced to add a lot of extra div (collection__meta, collection__meta-inner, collection__header-inner,...)
+                        to be able to accommodate with the brand related layout which make things more complicated...
+                        {%- endcomment -%}
+
+                        <div class="collection__header">
+                          <div class="collection__header-inner">
+                            <div class="collection__meta">
+                              <div class="collection__meta-inner">
+                                <h1 class="collection__title heading h1">{{ 'search.general.products_with_terms' | t: terms: filtered_terms }}</h1>
+
+                                <p class="collection__products-count text--small hidden-desk">{{ 'search.general.results_count' | t: count: search.results_count }}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </header>
+
+                      <div class="collection__dynamic-part">
+                        <div class="collection__toolbar">
+                          <div class="collection__toolbar-item collection__toolbar-item--count hidden-pocket">
+                            {%- assign offset = paginate.current_offset | plus: 1 -%}
+                            {%- assign page_size = paginate.current_offset | plus: paginate.page_size | at_most: paginate.items -%}
+
+                            <span class="collection__showing-count hidden-pocket hidden-lap">{{ 'search.general.showing_count' | t: offset: offset, page_size: page_size, count: paginate.items }}</span>
+
+                            <label for="showing-count">{{ 'collection.general.display' | t }}:</label>
+
+                            <div class="value-picker-wrapper">
+                              <button class="value-picker-button" aria-haspopup="true" aria-expanded="false" aria-controls="display-by-selector" data-action="open-value-picker">
+                                <span class="hidden-phone">{{ 'collection.general.page_size' | t: page_size: paginate.page_size }}</span><!--
+                                -->{%- render 'icon', icon: 'arrow-bottom' -%}
+                              </button>
+
+                              <div id="display-by-selector" class="value-picker" aria-hidden="true">
+                                {% render 'icon', icon: 'nav-triangle-borderless' %}
+
+                                <div class="value-picker__inner">
+                                  <header class="value-picker__header">
+                                    <span class="value-picker__title text--strong">{{ 'collection.general.display' | t }}</span>
+                                    <button class="value-picker__close" data-action="close-value-picker" aria-controls="display-by-selector" aria-label="{{ 'general.accessibility.close' | t }}">{% render 'icon', icon: 'close' %}</button>
+                                  </header>
+
+                                  <div class="value-picker__choice-list">
+                                    <button class="value-picker__choice-item link {% if items_per_page == 24 %}is-selected{% endif %}" data-action="select-value" data-value="24">{{ 'collection.general.page_size' | t: page_size: 24 }} {% render 'icon', icon: 'check-2' %}</button>
+                                    <button class="value-picker__choice-item link {% if items_per_page == 36 %}is-selected{% endif %}" data-action="select-value" data-value="36">{{ 'collection.general.page_size' | t: page_size: 36 }} {% render 'icon', icon: 'check-2' %}</button>
+                                    <button class="value-picker__choice-item link {% if items_per_page == 48 %}is-selected{% endif %}" data-action="select-value" data-value="48">{{ 'collection.general.page_size' | t: page_size: 48 }} {% render 'icon', icon: 'check-2' %}</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="collection__toolbar-item collection__toolbar-item--layout">
+                            <span class="collection__layout-label hidden-phone">{{ 'collection.layout.title' | t }}</span>
+
+                            {%- if section.settings.default_view_layout == 'grid' -%}
+                              <button type="button" class="collection__layout-button {% if view_mode == 'grid' %}is-selected{% endif %} touch-area" aria-label="{{ 'collection.layout.grid' | t }}" data-action="change-layout" data-layout-mode="grid">{% render 'icon', icon: 'grid' %}</button>
+                              <button type="button" class="collection__layout-button {% if view_mode == 'list' %}is-selected{% endif %} touch-area" aria-label="{{ 'collection.layout.list' | t }}" data-action="change-layout" data-layout-mode="list">{% render 'icon', icon: 'list' %}</button>
+                            {%- else -%}
+                              <button type="button" class="collection__layout-button {% if view_mode == 'list' %}is-selected{% endif %} touch-area" aria-label="{{ 'collection.layout.list' | t }}" data-action="change-layout" data-layout-mode="list">{% render 'icon', icon: 'list' %}</button>
+                              <button type="button" class="collection__layout-button {% if view_mode == 'grid' %}is-selected{% endif %} touch-area" aria-label="{{ 'collection.layout.grid' | t }}" data-action="change-layout" data-layout-mode="grid">{% render 'icon', icon: 'grid' %}</button>
+                            {%- endif -%}
+                          </div>
+                        </div>
+
+                        {%- comment -%}
+                        --------------------------------------------------------------------------------------
+                        COLLECTION PRODUCTS
+                        --------------------------------------------------------------------------------------
+                        {%- endcomment -%}
+
+                        {%- if view_mode == 'grid' -%}
+                          {%- assign show_as_list = false -%}
+                        {%- else -%}
+                          {%- assign show_as_list = true -%}
+                        {%- endif -%}
+
+                        <div class="product-list product-list--collection">
+                          {%- for product in search.results -%}
+                            {%- render 'product-item', product: product, list: show_as_list, grid_classes: grid_classes -%}
+                          {%- endfor -%}
+                        </div>
+
+                        {%- render 'pagination', paginate: paginate -%}
+                      </div>
+                    </div>
+                  </div>
+                {%- endif -%}
+
+                {%- comment -%}
+                If the merchant has enabled the pages and articles, we allocate a space and an additional Ajax requests
+                will be done to fetch the results. Note that as we don't know if there are page and/or blog results,
+                we hide the div by default
+                {%- endcomment -%}
+
+                {%- if settings.search_mode != 'product' -%}
+                  <div class="link-search-results" style="display: none"></div>
+                {%- endif -%}
+              </div>
+            </div>
+          </div>
+        {% assign dm_paginate_by = paginate.page_size %}{%- endpaginate -%}
+      {%- endif -%}
+    {%- else -%}
+      <div class="empty-state">
+        <p class="empty-state__heading heading h1">{{ 'search.general.title' | t }}</p>
+        <p class="empty-state__description">{{ 'search.general.content' | t }}</p>
+
+        <form class="empty-state__quick-form" action="{{ routes.search_url }}" method="get">
+          <input type="hidden" name="type" value="product">
+          <input type="hidden" name="options[prefix]" value="last">
+
+          <div class="form__connected-item">
+            <div class="form__input-wrapper form__input-wrapper--labelled">
+              <input id="search" type="text" class="form__field form__field--text" name="q" autocomplete="off" autocorrect="off">
+              <label for="search" class="form__floating-label">{{ 'search.general.input_placeholder' | t }}</label>
+            </div>
+
+            <button type="submit" class="form__connection button button--primary" aria-label="{{ 'search.general.input_placeholder' | t }}">{% render 'icon', icon: 'search' %}</button>
+          </div>
+        </form>
+
+        <a href="{{ routes.root_url }}" class="empty-state__link link link--accented">{{ 'search.general.go_back_home' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%}
+  --------------------------------------------------------------------------------------
+  QUICK VIEW CONTAINER
+  --------------------------------------------------------------------------------------
+  {%- endcomment -%}
+
+  <div id="modal-quick-view-{{ section.id }}" class="modal" aria-hidden="true">
+    <div class="modal__dialog modal__dialog--stretch" role="dialog">
+      <button class="modal__close link" data-action="close-modal" title="{{ 'general.accessibility.close' | t | escape }}">
+        {%- render 'icon', icon: 'close' -%}
+      </button>
+
+      <div class="modal__loader">
+        {%- render 'icon', icon: 'search-loader' -%}
+      </div>
+
+      <div class="modal__inner"></div>
+    </div>
+  </div>
+</section>
+
+{% if dm_paginate_by %}{% render 'spurit_dmr_collection_template_snippet', paginate_by: dm_paginate_by %}{% endif %}{% schema %}
+{
+  "name": "Search",
+  "settings": [
+    {
+      "type": "select",
+      "id": "products_per_row",
+      "label": "Products per row (desktop)",
+      "options": [
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "select",
+      "id": "default_view_layout",
+      "label": "Default view layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "list",
+          "label": "List"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "show_quick_view",
+      "label": "Show quick view on...",
+      "options": [
+        {
+          "value": "list",
+          "label": "List view"
+        },
+        {
+          "value": "list_grid",
+          "label": "List and grid views"
+        }
+      ],
+      "default": "list"
+    },
+    {
+      "type": "select",
+      "id": "show_quick_buy",
+      "label": "Show quick buy on...",
+      "info": "If product has variants, quick view and quick buy do the same thing.",
+      "options": [
+        {
+          "value": "list",
+          "label": "List view"
+        },
+        {
+          "value": "list_grid",
+          "label": "List and grid views"
+        }
+      ],
+      "default": "list"
+    },
+    {
+      "type": "link_list",
+      "id": "quick_links",
+      "label": "Quick links",
+      "info": "This menu has limited support for dropdown items."
+    }
+  ]
+}
+{% endschema %}

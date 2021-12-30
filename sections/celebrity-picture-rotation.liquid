@@ -1,0 +1,616 @@
+
+
+<section class="section">
+    <div class="container">
+        {%- if section.settings.title != blank -%}
+            <div class="celebrity-picture-rotation-title h1 aaa"> 
+                {{ section.settings.title}}
+            </div>
+        {%- endif -%}
+        {%- if section.settings.description != blank -%}
+            <div class="celebrity-picture-rotation-description h3"> 
+                {{ section.settings.description}}
+            </div>
+        {%- endif -%}
+        <div class="celebrity-picture-rotation-container"> 
+            <div class="scroller__inner">
+                {%- for block in section.blocks -%}
+                {% assign blockLength = forloop.index %}
+                {%- assign image_url = block.settings.image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+
+                    <div 
+                        class="celebrity-picture-rotation-container-item"  
+                        data-id='{{block.settings.pro.handle}}' 
+                        data-index= '{{forloop.index0}}'
+                        data-action="open-modal" 
+                        data-secondary-action="open-quick-view" 
+                        aria-controls="modal-quick-view-{{ section.id }}" 
+                        data-product-url="{{ image_url }}"
+                        onclick='handleImg("{{forloop.index0}}","{{block.settings.pro.handle}}","{{image_url}}","{{block.settings.dateString}}")'
+                    >   
+                        <div class="celebrity-picture-rotation-container-item-p">{{block.settings.textBottom}}</div>
+                        <div class="celebrity-picture-rotation-container-item-mask"> </div>
+                        {%- render 'icon', icon: 'ins-camera', class:'celebrity-picture-rotation-container-item-icon' -%}
+                        {%- capture image_sizes -%}
+                            {%- render 'image-size', sizes: '100,200,300,400,500,600,700,800,900,1000', image: block.settings.image -%}
+                        {%- endcapture -%}
+                        <img 
+                            style="width:100%"
+                            data-src="{{ image_url }}" 
+                            data-widths="[{{ image_sizes }}]" 
+                            data-sizes="auto"
+                            class="lazyload"
+                        >  
+                    </div>
+                {%- endfor -%}
+            </div>
+        </div>
+        <span class="cpr_scroller__ctrl cpr_ctrl-prev" onclick="btnClick('prev')">{%- render 'icon', icon: 'arrow-left' -%}</span>
+        <span class="cpr_scroller__ctrl cpr_ctrl-next" onclick="btnClick('next')">{%- render 'icon', icon: 'arrow-right' -%}</span>
+        <div class="powr-form__button">
+            <button type="button"  class="product-form__add-button button button--primary " onclick="openForm()">BE OUR AMBASSADORS</button>
+        </div>
+        <script src="https://www.powr.io/powr.js?platform=shopify"></script>
+        <div id="powr-form-builder__box" style="display: none;">
+            <button class="powr-form-builder__box__modal__close link" onclick="closeForm()"
+                    title="{{ 'general.accessibility.close' | t | escape }}">
+                {%- render 'icon', icon: 'close' -%}
+            </button>
+            <div class="powr-form-builder" id="fc81a6cb_1640145481"></div>
+        </div>
+        {%- comment -%}
+                --------------------------------------------------------------------------------------
+            QUICK VIEW CONTAINER
+            --------------------------------------------------------------------------------------
+        {%- endcomment -%}
+        <div id="modal-quick-view-{{ section.id }}" class="modal" aria-hidden="true">
+            <div class="modal__dialog modal__dialog--stretch" role="dialog">
+                <button class="modal__close link" data-action="close-modal"
+                                title="{{ 'general.accessibility.close' | t | escape }}">
+                    {%- render 'icon', icon: 'close' -%}
+                </button>
+                <div class="modal__loader">
+                    {%- render 'icon', icon: 'search-loader' -%}
+                </div>
+                <div class="modal__inner d-flex">
+                    <div class="modal__inner__left d-flex-1"></div>
+                    <div class="modal__inner__right d-flex-1">
+                        <div class="modal__inner__right__top d-flex d-flex-1">
+                        
+                        </div>
+                        <div class="modal__inner__right__bottom">
+                        
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn__Prev" type="button" onclick="changeImage('prev')">{%render "icon",icon:'arrow-left'%}</button>
+                <button class="btn btn__next" type="button" onclick="changeImage('next')">{%render "icon",icon:'arrow-right'%}</button>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+<style lang="scss">
+    #shopify-section-{{ section.id }} {
+		overflow: hidden;
+        background-color: {{settings.footer_background_color}};
+        
+	}
+    #shopify-section-{{ section.id }} .container{
+        position: relative;
+	}
+    #shopify-section-{{ section.id }}  .celebrity-picture-rotation-title,
+    #shopify-section-{{ section.id }}  .celebrity-picture-rotation-description{
+        text-align:center;
+    }
+    #shopify-section-{{ section.id }} .powr-form__button {
+        margin: 3rem 0;
+        text-align: center;
+    }
+
+    #shopify-section-{{ section.id }} #powr-form-builder__box{
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,.35);
+        z-index: 999;
+    }
+    #shopify-section-{{ section.id }} #powr-form-builder__box .powr-form-builder__box__modal__close{
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        right: 50%;
+        top: 3rem;
+        transform: translate(204px,0px);
+    }
+    
+    #shopify-section-{{ section.id }} #powr-form-builder__box .powr-form-builder{
+        margin: 3rem auto;
+        max-height: 80%;
+        overflow-y: auto;
+    }
+    #shopify-section-{{ section.id }} .celebrity-picture-rotation-container {
+        font-size: 0;
+        position: relative;
+        overflow: hidden;
+    }
+    #shopify-section-{{ section.id }} .celebrity-picture-rotation-container .scroller__inner {
+        overflow: visible;
+    }
+    #shopify-section-{{ section.id }} .container .cpr_scroller__ctrl {
+		height: 50px;
+		width: 30px;
+		line-height: 50px;
+		cursor: pointer;
+		color: var(--secondary-background);
+		background: var(--flickity-arrow-color);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		transition: all .2s ease-in-out;
+		transform: scale(.7);
+		z-index: 1;
+		opacity: 0;
+		position: absolute;
+		bottom: calc(42%);
+	}
+    #shopify-section-{{ section.id }} .container .cpr_scroller__ctrl:hover {
+		background: var(--accent-color);
+	}
+	#shopify-section-{{ section.id }} .container .cpr_ctrl-prev {
+		left: 10px;
+	}
+	#shopify-section-{{ section.id }} .container .cpr_ctrl-next {
+		right: 10px;
+	}
+	#shopify-section-{{ section.id }} .container:hover .cpr_scroller__ctrl {
+		opacity: 1;
+		transform: scale(1.34);
+    }
+    #shopify-section-{{ section.id }}  .celebrity-picture-rotation-container {
+        text-align: center;
+        white-space: nowrap;
+    }
+    #shopify-section-{{ section.id }}  .celebrity-picture-rotation-container-item {
+        display: inline-block;
+        position: relative;
+        width: 16.66%;
+        cursor:pointer;
+        box-sizing: border-box;
+        text-align: center;
+        padding: 0 5px;
+    }
+    #shopify-section-{{ section.id }} .celebrity-picture-rotation-container-item-mask{
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background-color: #fff;
+        opacity: 0;
+    }
+    #shopify-section-{{ section.id }}  .celebrity-picture-rotation-container-item .celebrity-picture-rotation-container-item-p{
+        display: none;
+    }
+    #shopify-section-{{ section.id }}  .celebrity-picture-rotation-container-item  svg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-top: -20px;
+        margin-left: -20px;
+        width: 40px;
+        height: 40px;
+        opacity: 0;
+    }
+    #shopify-section-{{ section.id }}  .celebrity-picture-rotation-container-item:hover svg{
+        opacity: 1;
+        transition: all .3s ease-in-out
+    }
+    #shopify-section-{{ section.id }}  .celebrity-picture-rotation-container-item:hover .celebrity-picture-rotation-container-item-mask {
+        opacity: .8;
+        transition: all .3s ease-in-out
+    }
+    #shopify-section-{{ section.id }}  .modal__dialog--stretch {
+        width: calc(100% - 160px);
+    }
+    #shopify-section-{{ section.id }} .modal__dialog {
+        overflow:visible;
+        position:relative;
+    }
+    #shopify-section-{{ section.id }} .modal__dialog .btn{
+        position: absolute;
+        width:45px;
+        height:45px;
+        top: 50%;
+        margin-top: -22.5px;
+        border:2px solid #fff;
+        border-radius:50%;
+        color:#fff;
+    }
+    #shopify-section-{{ section.id }} .modal__dialog .btn__Prev{
+        left: -67.5px;
+    }
+    #shopify-section-{{ section.id }} .modal__dialog .btn__next{
+        right:-67.5px;
+    }
+    #shopify-section-{{ section.id }} .modal__dialog .modal__inner .modal__inner__right {
+        padding:20px;
+        height: 600px;
+        overflow-y: auto;        
+    }
+    #shopify-section-{{ section.id }} .modal__dialog .modal__inner .modal__inner__right .product-meta__title{
+        margin-right: 1rem;
+    }
+    
+    #shopify-section-{{ section.id }} .modal__dialog .modal__inner .modal__inner__right .modal__inner__right__bottom{
+        word-wrap: break-word;
+        word-break: break-all;
+        overflow: hidden;
+    }
+    #shopify-section-{{ section.id }} .modal__dialog .modal__inner__right .modal__inner__right__bottom .head{
+        line-height: 3rem;
+        color: rgb(153, 153, 153);
+        font-size: 1rem;
+    }
+    #shopify-section-{{ section.id }} .modal__dialog .modal__inner__right .modal__inner__right__bottom .logo{
+        display: inline-block;
+        width: 3rem;
+        height: 3rem;
+        margin-right: .5rem;
+        text-align: center;
+        line-height: 3rem;
+        border-radius: 50%;
+        font-size: 2rem;
+        background-color: rgb(242, 242, 242);
+    }
+    #shopify-section-{{ section.id }} .modal__dialog .modal__inner__right .modal__inner__right__bottom .text{
+        font-size: 1.5rem;
+        color: {{settings.accent_color}};
+    }
+    #shopify-section-{{ section.id }} .modal__dialog .modal__inner__right .modal__inner__right__bottom .product-meta__share-buttons{
+        justify-content: flex-end;
+    }
+    @media screen and (max-width: 641px) {
+        .btn_hide--max641{
+            display: none !important;
+        }
+        #shopify-section-{{ section.id }} .container .cpr_ctrl-prev {
+		    left: 15px;
+        }
+        #shopify-section-{{ section.id }} .container .cpr_ctrl-next {
+            right: 15px;
+        }
+        #shopify-section-{{ section.id }}  .celebrity-picture-rotation-container-item {
+            width: 100%;
+            padding: 3rem;
+            box-sizing: border-box;
+        }
+        #shopify-section-{{ section.id }} .modal__dialog--stretch{
+            width: 100%;
+            height: 100%;
+        }
+        #shopify-section-{{ section.id }} .modal__close, 
+        #shopify-section-{{ section.id }} #powr-form-builder__box .powr-form-builder__box__modal__close{
+            position: fixed;
+            right: 1.5rem;
+            top: 0.5rem;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            color: #ccc;
+            padding:5px;
+            background-color: #fff;
+            transform: translate(0px,0px)
+        }
+        #shopify-section-{{ section.id }} .modal__inner{
+            display: block;
+        }
+        #shopify-section-{{ section.id }} .modal__dialog .modal__inner  {
+            height: 100%;
+        }
+        #shopify-section-{{ section.id }} .modal__inner__left {
+            width: 100%;
+            height: 50%;
+            overflow-y: auto;
+        }
+        #shopify-section-{{ section.id }} .modal__inner__left img {
+            width: 100%;
+            height: auto !important;
+        }
+        #shopify-section-{{ section.id }} .modal__dialog .modal__inner .modal__inner__right {
+            height: 45%;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+        #shopify-section-{{ section.id }} .modal__dialog .modal__inner .modal__inner__right .modal__inner__right__top div:first-child{
+            flex: 0 0 40%;
+        }
+        #shopify-section-{{ section.id }} .modal__dialog .modal__inner .modal__inner__right .modal__inner__right__top div:nth-child(2){
+            flex: 0 0 60%;
+        }
+        #shopify-section-{{ section.id }} .modal__dialog .modal__inner .modal__inner__right .product-form__add-button {
+            padding: 0 5px;
+        }
+        
+        #shopify-section-{{ section.id }} .modal__dialog .btn{ 
+            top: 20%;
+            background-color: {{settings.accent_color}};
+            border: 2px solid {{settings.accent_color}};
+        }
+        #shopify-section-{{ section.id }} .modal__dialog .btn__Prev{
+            left: 22.5px;
+        }
+        #shopify-section-{{ section.id }} .modal__dialog .btn__next{
+            right:22.5px;
+        }
+    }
+    @media screen and (min-width: 641px) and (max-width: 999px) {
+        .btn_hide_641-999{
+            display: none !important;
+        }
+        #shopify-section-{{ section.id }} .modal__inner{
+            height:400px
+        }
+        #shopify-section-{{ section.id }}  .celebrity-picture-rotation-container-item {
+            width: 33.33%;
+        }
+        #shopify-section-{{ section.id }} .modal__inner__right{
+            overflow-y:auto;
+        }
+        #shopify-section-{{ section.id }} .button {
+            padding: 0 10px;
+        }
+        #shopify-section-{{ section.id }} .modal__dialog .modal__inner .modal__inner__right {
+            padding:1rem;
+            height: 100%;
+        }
+    }
+    @media screen and (min-width: 1000px) {
+        .btn_hide_min1000{
+            display: none !important;
+        }
+        .modal__inner{
+            height:600px
+        }
+        .modal__inner__right{
+            overflow-y:auto;
+        }
+    }     
+    @media screen and (min-width: 1280px) {
+        .btn_hide_min1280{
+            display: none !important;
+        }
+        #shopify-section-{{ section.id }} .modal__inner{
+            height:auto
+        }
+    }
+</style>
+<script>
+    /*当前点击图片索引*/
+    let dialogCurrentIndex = Number;
+    /*获取blocks*/
+    var blocks = [];
+    {%- for block in section.blocks -%}
+    {%- assign image_url = block.settings.image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+    blocks.push(
+        {
+            image_url:'{{image_url}}'
+        }
+        );
+    {%- endfor-%}
+    var box=document.getElementById('shopify-section-{{ section.id }}');
+    var content = box.querySelector(".celebrity-picture-rotation-container");
+    var list = content.querySelector(".scroller__inner");
+    var items = content.querySelectorAll(".celebrity-picture-rotation-container-item");
+    var pre = content.querySelector('.cpr_ctrl-prev');
+    var next = content.querySelector('.cpr_ctrl-next');
+    /*当前轮播索引*/
+    var carouselCurrent;
+    /*获取屏幕宽度*/
+    var w = window.innerWidth|| document.documentElement.clientWidth|| document.body.clientWidth;
+    if(w <= 640) {
+        carouselCurrent = 1
+    }else if(w > 640 && w<= 999){
+        carouselCurrent = 3
+    }else if (w > 1000 ){
+        carouselCurrent = 6
+    };
+    list.style.transform = "translateX(-"+0+"px)";
+    list.cssName = function (name){
+        var prefixes = ['', '-ms-','-moz-', '-webkit-', '-khtml-', '-o-'],
+        rcap = /-([a-z])/g,capfn = function($0,$1){
+          return $1.toUpperCase();
+        };
+        list.cssName = function(name, target, test){
+          target = target || document.documentElement.style;
+          for (var i=0, l=prefixes.length; i < l; i++) {
+            test = (prefixes[i] + name).replace(rcap,capfn);
+            if(test in target){
+              return test;
+            }
+          }
+          return null;
+        }
+        return list.cssName(name);
+    };
+    css3transition = list.cssName("transition");
+    list.style[css3transition] = "all .3s ease-in";
+    function btnClick(type) {
+        let st  = window.getComputedStyle(list, null);
+        let curTransformX =  parseFloat(st.transform.substring(6).split(',')[4])
+        let itemwidth = content.querySelectorAll(".celebrity-picture-rotation-container-item")[0].offsetWidth
+        if(type === 'prev'){
+            if(carouselCurrent === 1 || (w > 640 && w<= 999 && carouselCurrent === 3) || w > 1000 && carouselCurrent === 6) return 
+            carouselCurrent -- ;
+            list.style.transform = "translateX("+(curTransformX + itemwidth)+"px)";
+        } else if( type === 'next') {
+            if(carouselCurrent === blocks.length) return
+            carouselCurrent ++;
+            list.style.transform = "translateX("+(curTransformX - itemwidth)+"px)";
+        }
+    };
+    function openForm(){
+        let html = document.getElementsByTagName('html')[0]
+        html.classList.add("is-locked");
+        let el = box.querySelector("#powr-form-builder__box")
+        el.style.display = 'block'
+    };
+    function closeForm(){ 
+        let html = document.getElementsByTagName('html')[0]
+        html.classList.remove('is-locked')
+        let el = box.querySelector("#powr-form-builder__box")
+        el.style.display = 'none'
+    };
+    function getdata(spu){
+        return new Promise(function (resolve, reject) {
+          let xhr = null;
+          if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest();
+          } else {
+            xhr = new ActiveXObject("Microsoft.XMLHTTP")
+          }
+          let url='/products/' + spu + '.js';
+          xhr.open('get', url, true);
+          xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                let data={};
+                data.code=1;
+                data.data=JSON.parse(xhr.responseText);
+                resolve(data)
+              } else {
+                let data={};
+                data.code=0;
+                data.message=xhr.status;
+                data.data={};
+                resolve(data);
+              }
+            }
+          }
+          xhr.send(null);
+        })
+    };
+    function handleImg(index,handle,image_url,dateString) {
+        dialogCurrentIndex = Number(index)
+        let textBottom = items[index].querySelector('.celebrity-picture-rotation-container-item-p').innerHTML
+        console.log('textBottom',textBottom)
+        var modal = document.getElementById('modal-quick-view-{{ section.id }}')
+        modal.classList.add('is-loading');
+        modal.querySelector('.modal__inner__left').innerHTML = ''
+        modal.querySelector('.modal__inner__right__top').innerHTML = ''
+        modal.querySelector('.modal__inner__right__bottom').innerHTML = ''
+        getdata(handle).then(res=>{
+                const { data } = res 
+                let share_url = encodeURI('{{shop.url}}' + data.url) || ''
+                let twitter_text = encodeURI(data.title) || ''
+                let pinterest_description = encodeURI(data.description.replace(/<.*?>/ig,"").slice(0,14)) || ''
+                let pinterest_image = 'https:' + data.featured_image || ''
+                let twitter_url = 'https://twitter.com/share?' + (twitter_text ? 'text=' + twitter_text : '') + '&url=' + share_url
+                modal.querySelector('.modal__inner__left').innerHTML = `<img data-src="${image_url}" data-sizes="auto" style="height:100%" class="lazyload" data-widths="[300,400,500,600,700,800,900,1000,1100]">`
+                modal.querySelector('.modal__inner__right__top').innerHTML = `
+                    <div class="d-flex-1"><img data-src="${data.featured_image}" data-sizes="auto" class="lazyload" data-widths="[300,400,500,600,700]" ></div>
+                    <div class="d-flex-1 ">
+                        <h5 class="product-meta__title h5">
+                            <a href="${data.url}">${data.title}</a>
+                        </h5>
+                        <h2 class="h2">
+                            <span>$${(data.price/100).toFixed(2)}</span>
+                        </h2>
+                        <button type="button" class="product-form__add-button button button--primary" ><a href="${data.url}">SHOP NOW</a></button>
+                    </div>
+                `
+                modal.querySelector('.modal__inner__right__bottom').innerHTML = `
+                    <div class="head">
+                            <span class="logo">
+                                H
+                            </span>
+                            <span class="text">hyfol</span>
+                        <span class="fr">
+                            ${dateString}
+                        </span>
+                    </div>
+                    <div class="h6">${textBottom}</div>
+                    <div class="product-meta__share-buttons">
+                        <ul class="social-media__item-list list--unstyled" role="list">
+                            <li class="social-media__item social-media__item--facebook">
+                            <a href="https://www.facebook.com/sharer.php?u=${ share_url }" target="_blank" rel="noopener" aria-label="{{ 'general.social.facebook_share' | t }}">{%- render 'icon', icon: 'facebook' -%}</a>
+                            </li>
+                            <li class="social-media__item social-media__item--pinterest">
+                            <a href="https://pinterest.com/pin/create/button/?url=${ share_url }{% if pinterest_image != blank %}&media={{ pinterest_image }}{% endif %}&description={{ pinterest_description }}" target="_blank" rel="noopener" aria-label="{{ 'general.social.pinterest_pin' | t }}">{%- render 'icon', icon: 'pinterest' -%}</a>
+                            </li>
+                            <li class="social-media__item social-media__item--twitter">
+                            <a href="${twitter_url}" target="_blank" rel="noopener" aria-label="{{ 'general.social.twitter_tweet' | t }}" aria-describedby="a11y-new-window-message">{%- render 'icon', icon: 'twitter' -%}</a>
+                            </li>
+                            <li class="social-media__item">
+                            <a href="mailto:?&subject=${twitter_text}&body=${ share_url }" aria-label="{{ 'general.social.email_share' | t }}" >{% render 'icon', icon: 'email' %}</a>
+                            </li>
+                        </ul>
+                    </div>
+                `
+                modal.classList.remove('is-loading');
+        }) 
+    };
+    function changeImage(type){
+        let computedIndex  = Number;
+        if(type === 'prev'){
+            computedIndex = dialogCurrentIndex === 0 ? blocks.length - 1 : dialogCurrentIndex - 1;
+        }else if (type === 'next'){
+            computedIndex = dialogCurrentIndex === blocks.length - 1 ? 0 : dialogCurrentIndex + 1;
+        }
+        document.querySelectorAll(".celebrity-picture-rotation-container-item")[computedIndex].click();
+    };
+</script>
+{% schema %}
+{
+	"name": "网红图片轮播",
+	"settings": [
+		{
+			"type": "text",
+			"id": "title",
+			"label": "模块标题"
+		},
+        {
+			"type": "richtext",
+			"id": "description",
+			"label": "模块描述"
+		}
+	],
+    "blocks":[
+		{
+			"type":"link",
+			"name":"红人图",
+			"settings":[
+                {
+                    "type":"image_picker",
+                    "id":"image",
+                    "label":"图片"
+                },
+                {
+                    "type":"product",
+                    "id":"pro",
+                    "label":"产品"
+                },
+				{
+					"type":"richtext",
+					"id":"textBottom",
+					"label":"左下文字"
+				},
+                {
+                    "type":"text",
+					"id":"dateString",
+					"label":"日期时间"
+                }
+			]
+
+		}
+	],
+    "presets": [
+		{
+			"category": "Image",
+			"name": "网红图片轮播",
+			"settings": {}
+		}
+	]
+}
+{% endschema %}

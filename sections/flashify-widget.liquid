@@ -1,0 +1,26 @@
+{% schema %}
+    {
+        "name": "Flashify Widget",
+        "settings": [
+            {
+                "id": "flashify_widget_id",
+                "type": "text",
+                "label": "Flashify Widget ID",
+                "default": "1"
+            }
+        ],
+        "blocks": [
+          {
+            "type": "@app"
+          }
+        ]
+    }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
+
+<div data-flashify-id="{{ section.settings.flashify_widget_id }}" data-flashify-type="widget" class="fs-wrapper"></div>

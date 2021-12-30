@@ -1,0 +1,437 @@
+{%- capture section_settings -%}
+	{
+	"stackable": false,
+	"layout": "vertical"
+	}
+{%- endcapture -%}
+
+<section class="section" id="slide_product" data-section-id="{{ section.id }}" data-section-type="featured-collection"
+				 data-section-settings='{{ section_settings }}'>
+	<div class="container container--flush">
+		{%- assign collection = section.settings.collection -%}
+		<div class="featured-collection lazyload">
+			<header class="featured-collection_header lazyload"
+							{% if section.settings.image %}data-bgset="{{ section.settings.image | img_url: '1000x' }}"{% endif %}>
+
+				<a href="{{ section.settings.link }}" class="featured-collection_link">
+					{%- if section.settings.web_image -%}
+						{%- capture web_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: section.settings.web_image -%}{%- endcapture -%}
+						{%- assign web_image_url = section.settings.web_image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+					{%- else -%}
+						{%- capture web_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: section.settings.desk_image -%}{%- endcapture -%}
+						{%- assign web_image_url = section.settings.desk_image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+					{%- endif -%}
+
+					{%- capture desk_sizes -%}{%- render 'image-size', sizes: '300,400,500,600,700,800,900,1000,1100,1200,1300,1400,1500,1600,1700,1800,1900,2000', image: section.settings.desk_image -%}{%- endcapture -%}
+					{%- assign desk_image_url = section.settings.desk_image | img_url: '1x1'| replace: '_1x1.', '_{width}x.' -%}
+
+					<img data-src="{{ desk_image_url }}" data-widths="[{{ desk_sizes }}]" data-sizes="auto" alt="{{ section.settings.desk_image.alt | escape }}" class="lazyload hidden-pocket">
+					<img data-src="{{ web_image_url }}" data-widths="[{{ web_sizes }}]" data-sizes="auto" alt="{{ section.settings.web_image.alt | escape }}" class="lazyload hidden-lap hidden-lap-and-up">
+					{%- comment -%}
+						{%- if section.settings.title != blank -%}
+							<h2 class="featured-collection__title heading h2">{{ section.settings.title | escape }}</h2>
+						{%- endif -%}
+						{%- if section.settings.content != blank -%}
+							<p class="featured-collection__text">{{ section.settings.content | escape | newline_to_br }}</p>
+						{%- endif -%}
+
+						{%- if section.settings.button_text != blank -%}
+							<a href="{{ section.settings.button_link | default: collection.url | default: '#' }}"
+								 class="featured-collection__cta button button--floating hidden-phone">{{ section.settings.button_text }}</a>
+						{%- endif -%}
+					{%- endcomment -%}
+				</a>
+			</header>
+
+			<div class="featured-collection_content">
+				<div class="cjj_scroller" id="cjj_scroller">
+					<div class="product-list" style="left: 0">
+						{%- unless collection == blank -%}
+							{%- for product in collection.products limit: section.settings.products_count -%}
+								<div class="list-item">
+									{%- render 'product-item', product: product, show_add_to_cart: section.settings.show_quick_buy -%}
+								</div>
+							{%- endfor -%}
+							{%- else -%}
+							{%- for i in (1..section.settings.products_count) -%}
+								<div class="list-item">
+									{%- render 'product-item-placeholder' -%}
+								</div>
+							{%- endfor -%}
+						{%- endunless -%}
+					</div>
+				</div>
+
+				<span class="cjj_scroller__ctrl ctrl-prev">
+              {%- render 'icon', icon: 'arrow-left' -%}
+            </span>
+				<span class="cjj_scroller__ctrl ctrl-next">
+              {%- render 'icon', icon: 'arrow-right' -%}
+            </span>
+			</div>
+		</div>
+	</div>
+</section>
+
+<style>
+	#shopify-section-{{ section.id }} .featured-collection_link{
+		width: 100%;
+		display: block;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_link>img{
+		width: 100%;
+	}
+	#shopify-section-{{ section.id }} .featured-collection {
+		background-color: {{ section.settings.background }};
+		padding: 10px;
+		display: flex;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_header {
+		color: {{ section.settings.text_color }};
+		width: 40%;
+		flex: 1 0 auto;
+		display: flex;
+		flex-flow: column;
+		justify-content: center;
+
+	}
+	#shopify-section-{{ section.id }} .featured-collection_header > h2 {
+		margin-top: 20%;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_header > P {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 3;
+		font-size: 0.85rem;
+		line-height: 1rem;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content {
+		width: 60%;
+		position: relative;
+		flex: 1 0 auto;
+		padding: 10px 0 0px 10px;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content .cjj_scroller {
+		position: relative;
+		overflow: hidden;
+		height: 100%;
+		padding-top: 10px;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content .product-list {
+		width: 100%;
+		position: absolute;
+		left: 0;
+		transition: all 0.8s;
+		background: none;
+		transform-style: preserve-3d;
+		overflow: unset;
+		display: block;
+		white-space: nowrap;
+		border: none;
+	}
+
+
+	#shopify-section-{{ section.id }} .featured-collection_content .current{
+		transition: all .8s;
+		position: relative;
+		z-index: 10;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content .current>div{
+		transition: all .8s;
+		transform: translate3d(0,0, 0);
+		-ms-transform:translate3d(0, 0, 0); 	/* IE 9 */
+		-moz-transform:translate3d(0, 0, 0); 	/* Firefox */
+		-webkit-transform:translate3d(0, 0, 0);/* Safari 和 Chrome */
+		-o-transform:translate3d(0, 0, 0);
+		box-shadow:0 0 2px 0 rgba(0,0,0,.4);
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content .product-item {
+		transform: translate3d(0, 0px, -10px);
+		-ms-transform:translate3d(0, 0px, -10px); 	/* IE 9 */
+		-moz-transform:translate3d(0, 0px, -10px); 	/* Firefox */
+		-webkit-transform:translate3d(0, 0px, -10px); /* Safari 和 Chrome */
+		-o-transform:translate3d(0, 0px, -10px);
+		transition: all .8s;
+		border-radius: 8px;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content .list-item {
+		width: 50%;
+		transition: all .8s;
+		display: inline-block;
+		perspective: 100px;
+		margin-left: -20px;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content .cjj_scroller__ctrl {
+		height: 50px;
+		width: 30px;
+		line-height: 50px;
+		cursor: pointer;
+		color: var(--secondary-background);
+		background: var(--flickity-arrow-color);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		transition: all .2s ease-in-out;
+		transform: scale(.7);
+		z-index: 1;
+		opacity: 0;
+		position: absolute;
+		top: calc(50% - 25px);
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content .cjj_scroller__ctrl:hover {
+		background: var(--accent-color);
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content .ctrl-prev {
+		left: 5px;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content .ctrl-next {
+		right: -5px;
+	}
+	#shopify-section-{{ section.id }} .featured-collection_content:hover .cjj_scroller__ctrl {
+		opacity: 1;
+		transform: scale(1.34);
+
+	}
+
+	#shopify-section-{{ section.id }} .featured-collection_header .button {
+		color: {{ section.settings.button_text_color }};
+		background-color: {{ section.settings.button_background }};
+		white-space: nowrap;
+	}
+	@media screen and (max-width: 640px) {
+		#shopify-section-{{ section.id }} .featured-collection {
+			display: block;
+			padding: 0;
+		}
+		#shopify-section-{{ section.id }} .featured-collection_header {
+			width: 100%;
+		}
+		#shopify-section-{{ section.id }} .featured-collection_content {
+			width: 100%;
+			padding: 0 10px;
+		}
+		#shopify-section-{{ section.id }} .featured-collection_content:hover .cjj_scroller__ctrl {
+			transform: scale(0.7);
+		}
+		#shopify-section-{{ section.id }} .featured-collection_content .ctrl-prev{
+			left: 0;
+		}
+		#shopify-section-{{ section.id }} .featured-collection_content .ctrl-next{
+			right: 0;
+		}
+	}
+	@media screen and (max-width: 1000px) {
+		#shopify-section-{{ section.id }} .featured-collection_content .cjj_scroller__ctrl {
+			opacity: 0.8;
+		}
+	}
+</style>
+
+<script>
+  ~function(){
+		let box=document.getElementById('slide_product')
+    let content = box.querySelector(".featured-collection_content")
+    let list = content.querySelector(".cjj_scroller .product-list")
+    let items = content.querySelectorAll(".product-list .list-item")
+    let pre = content.querySelector('.ctrl-prev')
+    let next = content.querySelector('.ctrl-next')
+    let margwidth = 20;
+    let itemwidth = 0;
+    let height = 0;
+    let width = 0;
+    let current = 1
+
+		function init(){
+      itemwidth = items[1].offsetWidth;
+      height = list.offsetHeight;
+      width = list.offsetWidth;
+      content.style.height=height+40+'px';
+      items[current].classList.add('current');
+      list.style.left=0.5*width-(0.5*itemwidth)+margwidth-(current)*(itemwidth-margwidth)+'px'
+      bind();
+
+    }
+		function reset(){
+      itemwidth = items[1].offsetWidth;
+      width = list.offsetWidth;
+      height = list.offsetHeight;
+      content.style.height=height+40+'px';
+      list.style.left=0.5*width-(0.5*itemwidth)+margwidth-(current)*(itemwidth-margwidth)+'px'
+		}
+		function bind(){
+      pre.onclick = () => {
+        set(-1)
+      }
+      next.onclick = () => {
+        set(1)
+      }
+      window.addEventListener('resize', debounce(reset, 1000));
+		}
+    function set(flg) {
+      if(current===0&&flg===-1)return;
+      if(current===(items.length-1)&&flg===1)return;
+      let left=parseInt(list.style.left);
+      items[current].classList.remove('current')
+      current+=flg;
+      list.style.left=left+(-flg*(itemwidth-margwidth))+'px'
+      items[current].classList.add('current')
+      if(!current){
+        pre.style.display='none';
+      }else{
+        pre.style.display='inline-flex';
+      }
+      if(current===items.length-1){
+        next.style.display='none';
+      }else{
+        next.style.display='inline-flex';
+      }
+    }
+    function debounce(func, delay) {
+      var timeout = null;
+      return function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(()=>{
+					func.apply(this, arguments);
+        }, delay);
+      };
+    }
+    init();
+
+    let srcoller = document.querySelector("#cjj_scroller")
+    let startX;
+    let endX;
+
+    srcoller.addEventListener('touchstart', function (e) {
+      startX = e.changedTouches[0].pageX;
+      endX=startX;
+    })
+    srcoller.addEventListener('touchmove', function (e) {
+      endX = e.changedTouches[0].pageX;
+    })
+    srcoller.addEventListener('touchend', function (e) {
+      if(endX-startX>50){
+        set(-1)
+      }
+      if(endX-startX<-50){
+        set(1)
+      }
+    })
+
+  }()
+
+
+</script>
+
+{% schema %}
+{
+	"name": "带图片的产品3d轮播",
+	"limit":1,
+	"settings": [
+		{
+			"type": "image_picker",
+			"id": "desk_image",
+			"label": "桌面端图片"
+		},
+		{
+			"type": "image_picker",
+			"id": "web_image",
+			"label": "移动端图片"
+		},
+		{
+			"type": "url",
+			"id": "link",
+			"label": "图片链接地址"
+		},
+		{
+			"type": "collection",
+			"id": "collection",
+			"label": "选择产品集合"
+		},
+		{
+			"type": "range",
+			"id": "products_count",
+			"label": "产品数量",
+			"min": 4,
+			"max": 48,
+			"step": 4,
+			"default": 12
+		},
+		{
+			"type": "checkbox",
+			"id": "show_quick_buy",
+			"label": "是否显示产品购买按钮",
+			"default": false
+		},
+		{
+			"type": "color",
+			"id": "background",
+			"label": "模块背景颜色",
+			"default": "#f0f0f0"
+		},
+		{
+			"type": "header",
+			"content": "-----标题设置-----"
+		},
+		{
+			"type": "text",
+			"id": "title",
+			"label": "标题",
+			"default": "HYFOL WOMEN"
+		},
+		{
+			"type": "textarea",
+			"id": "content",
+			"label": "内容",
+			"default": "Tell more about your product, Tell more about your product，Tell more about your product，Tell more about your product"
+		},
+		{
+			"type": "color",
+			"id": "title_color",
+			"label": "标题颜色",
+			"default": "#ffffff"
+		},
+		{
+			"type": "color",
+			"id": "text_color",
+			"label": "内容颜色",
+			"default": "#ffffff"
+		},
+		{
+			"type": "header",
+			"content": "-----按钮设置-----"
+		},
+		{
+			"type": "text",
+			"id": "button_text",
+			"label": "按钮文字",
+			"default": "SHOP NOW"
+		},
+		{
+			"type": "url",
+			"id": "button_link",
+			"label": "按钮链接"
+		},
+		{
+			"type": "color",
+			"id": "button_text_color",
+			"label": "按钮文字颜色",
+			"default": "#0774d7"
+		},
+		{
+			"type": "color",
+			"id": "button_background",
+			"label": "按钮背景色",
+			"default": "#ffffff"
+		}
+	],
+	"presets": [
+		{
+			"category": "Collection",
+			"name": "带图片的产品3d轮播",
+			"settings": {}
+		}
+	]
+}
+{% endschema %}
